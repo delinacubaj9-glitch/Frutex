@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frutex — Natural Juice Creator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== Animated Background ===== -->
+  <div class="bg-leaves" id="bg-leaves"></div>
+
+  <!-- ===== MUSIC & SFX ===== -->
+  <audio id="bgm" loop preload="auto"></audio>
+  <audio id="sfx-drop" preload="auto"></audio>
+  <audio id="sfx-blend" preload="auto"></audio>
+  <audio id="sfx-click" preload="auto"></audio>
+  <audio id="sfx-success" preload="auto"></audio>
+  <audio id="sfx-coins" preload="auto"></audio>
+  <button id="mute-btn" class="mute-btn" onclick="toggleMute()" title="Toggle Music">🔊</button>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast" class="toast"></div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: MAIN MENU -->
+  <!-- =============================== -->
+  <div class="screen active" id="menu-screen">
+    <div class="menu-container">
+      <div class="logo-area">
+        <img class="logo-drink" src="lucid-origin_Create_a_vibrant_cartoon_style_illustration_of_a_high_quality_colorful_drink_wit-0-removebg-preview.png" alt="Frutex Juice">
+        <h1 class="logo-title">Frutex</h1>
+        <p class="logo-subtitle">Natural 100% Fruit Juices</p>
+      </div>
+      <div class="menu-stats">
+        <div class="stat-badge">
+          <span class="stat-icon">⭐</span>
+          <span id="menu-level">Level 1</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-icon">🪙</span>
+          <span id="menu-coins">0</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-icon">✨</span>
+          <span id="menu-xp">0 XP</span>
+        </div>
+      </div>
+      <div class="menu-buttons">
+        <button class="btn-menu btn-primary" onclick="showScreen('game')">
+          <span class="btn-icon">🧃</span>Create New Juice
+        </button>
+        <button class="btn-menu btn-secondary" onclick="showScreen('shop')">
+          <span class="btn-icon">🛒</span>Shop
+        </button>
+        <button class="btn-menu btn-secondary" onclick="showScreen('recipes')">
+          <span class="btn-icon">📖</span>Recipe Book
+        </button>
+        <button class="btn-menu btn-secondary" onclick="showScreen('achievements')">
+          <span class="btn-icon">🏆</span>Achievements
+        </button>
+        <button class="btn-menu btn-accent" onclick="showScreen('challenges')">
+          <span class="btn-icon">📋</span>Daily Challenges
+        </button>
+      </div>
+      <button class="btn-reset" onclick="resetGame()">🔄 Reset Progress</button>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: FRUIT SELECTION & BLENDING -->
+  <!-- =============================== -->
+  <div class="screen" id="game-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
+      <div class="game-stats">
+        <span>🪙 <b id="game-coins">0</b></span>
+        <span>⭐ Lv.<b id="game-level">1</b></span>
+        <span>✨ <b id="game-xp">0</b> XP</span>
+      </div>
+    </div>
+
+    <div class="game-layout">
+      <!-- LEFT: Fruit Selection -->
+      <div class="panel fruit-panel">
+        <h2 class="panel-title">🍎 Pick Your Fruits</h2>
+        <p class="panel-hint">Drag 2–4 fruits into the blender!</p>
+
+        <!-- Category tabs -->
+        <div class="fruit-tabs" id="fruit-tabs">
+          <button class="fruit-tab active" data-cat="basic">🍏 Basic</button>
+          <button class="fruit-tab" data-cat="citrus">🍋 Citrus</button>
+          <button class="fruit-tab" data-cat="berry">🍓 Berry</button>
+          <button class="fruit-tab" data-cat="tropical">🥭 Tropical</button>
+        </div>
+
+        <div class="fruit-grid" id="fruit-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- CENTER: Blender -->
+      <div class="panel blender-panel">
+        <h2 class="panel-title">🌀 The Blender</h2>
+        <div class="blender-area" id="blender-area">
+          <div class="blender-machine">
+            <div class="blender-lid" id="blender-lid"></div>
+            <div class="blender-jar" id="blender-jar">
+              <div class="blender-slots" id="blender-slots">
+                <div class="blender-slot" data-slot="0" ondrop="dropFruit(event,0)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div>
+                <div class="blender-slot" data-slot="1" ondrop="dropFruit(event,1)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div>
+                <div class="blender-slot" data-slot="2" ondrop="dropFruit(event,2)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div>
+                <div class="blender-slot" data-slot="3" ondrop="dropFruit(event,3)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div>
+              </div>
+              <div class="blender-juice" id="blender-juice" style="display:none;"></div>
+            </div>
+            <div class="blender-base">
+              <div class="blender-button" id="blend-btn" onclick="startBlend()">⚡ BLEND!</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-clear" onclick="clearBlender()">🗑️ Clear All</button>
+      </div>
+
+      <!-- RIGHT: Recipe Info -->
+      <div class="panel info-panel">
+        <h2 class="panel-title">📝 Current Mix</h2>
+        <div class="mix-info" id="mix-info">
+          <p class="mix-empty">Add fruits to the blender to see your mix!</p>
+        </div>
+        <div class="flavor-bars" id="flavor-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: BOTTLE DESIGN — Step by Step -->
+  <!-- =============================== -->
+  <div class="screen" id="design-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('game')">← Back</button>
+      <h2>🎨 Design Your Bottle</h2>
+      <span class="design-step-label" id="design-step-label">Step 1/4</span>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-dots" id="step-dots">
+      <span class="step-dot active" data-step="1"></span>
+      <span class="step-dot" data-step="2"></span>
+      <span class="step-dot" data-step="3"></span>
+      <span class="step-dot" data-step="4"></span>
+    </div>
+
+    <div class="design-layout">
+      <!-- Live Preview -->
+      <div class="design-preview">
+        <div class="preview-bottle" id="preview-bottle">
+          <div class="preview-straw" id="preview-straw"></div>
+          <div class="preview-cap" id="preview-cap"></div>
+          <div class="preview-body" id="preview-body" style="background: var(--juice-color, #ff8c42);">
+            <div class="preview-label" id="preview-label">FRUTEX</div>
+          </div>
+        </div>
+        <p class="preview-name" id="preview-name">Glass Bottle</p>
+      </div>
+
+      <!-- STEP 1: Bottle Shape -->
+      <div class="design-step active" id="design-step-1">
+        <h3>🍾 Choose Your Bottle</h3>
+        <p class="step-hint">Pick a unique bottle shape for your juice</p>
+        <div class="design-grid" id="bottle-shapes"></div>
+        <button class="btn-step-next btn-primary" onclick="designNext(2)">Next: Cap Color →</button>
+      </div>
+
+      <!-- STEP 2: Cap Color -->
+      <div class="design-step" id="design-step-2">
+        <h3>🧢 Pick a Cap</h3>
+        <p class="step-hint">Choose the cap that matches your style</p>
+        <div class="design-grid" id="cap-colors"></div>
+        <div class="step-buttons">
+          <button class="btn-step-back" onclick="designNext(1)">← Back</button>
+          <button class="btn-step-next btn-primary" onclick="designNext(3)">Next: Label →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Label Design -->
+      <div class="design-step" id="design-step-3">
+        <h3>🏷️ Design Your Label</h3>
+        <p class="step-hint">Pick a label that tells your juice's story</p>
+        <div class="design-grid" id="label-designs"></div>
+        <div class="step-buttons">
+          <button class="btn-step-back" onclick="designNext(2)">← Back</button>
+          <button class="btn-step-next btn-primary" onclick="designNext(4)">Next: Name →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Name Your Juice -->
+      <div class="design-step" id="design-step-4">
+        <h3>📛 Name Your Creation</h3>
+        <p class="step-hint">Give your juice a memorable name</p>
+        <input type="text" class="juice-name-input" id="juice-name-input"
+               placeholder="e.g. Tropical Sunrise" maxlength="25"
+               oninput="updateJuiceName()">
+        <div class="step-buttons">
+          <button class="btn-step-back" onclick="designNext(3)">← Back</button>
+          <button class="btn-big btn-primary" onclick="presentToCustomer()">
+            🎯 Present to Customer!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: CUSTOMER PRESENTATION -->
+  <!-- =============================== -->
+  <div class="screen" id="present-screen">
+    <div class="present-container">
+      <div class="customer-area" id="customer-area">
+        <!-- Customer appears here -->
+      </div>
+      <div class="present-juice" id="present-juice">
+        <!-- Juice preview -->
+      </div>
+      <button class="btn-big btn-primary" id="present-btn" onclick="getRating()">
+        🎁 Present Your Juice!
+      </button>
+      <div class="rating-display" id="rating-display" style="display:none;">
+        <!-- Rating stars and feedback -->
+      </div>
+      <button class="btn-big btn-secondary" id="continue-btn" style="display:none;" onclick="finishRound()">
+        Continue →
+      </button>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: SHOP -->
+  <!-- =============================== -->
+  <div class="screen" id="shop-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
+      <h2>🛒 Shop</h2>
+      <span class="shop-coins">🪙 <b id="shop-coins">0</b></span>
+    </div>
+    <div class="shop-tabs">
+      <button class="shop-tab active" data-cat="fruits">🍎 Fruits</button>
+      <button class="shop-tab" data-cat="bottles">🍾 Bottles</button>
+      <button class="shop-tab" data-cat="labels">🏷️ Labels</button>
+      <button class="shop-tab" data-cat="boosters">⚡ Boosters</button>
+    </div>
+    <div class="shop-grid" id="shop-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: RECIPE BOOK -->
+  <!-- =============================== -->
+  <div class="screen" id="recipes-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
+      <h2>📖 Recipe Book</h2>
+      <div></div>
+    </div>
+    <div class="shop-tabs" id="recipe-tabs">
+      <button class="shop-tab active" data-cat="my">🧃 My Recipes</button>
+      <button class="shop-tab" data-cat="signature">👑 Frutex Signature</button>
+    </div>
+    <div class="recipes-grid" id="recipes-grid">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="signature-grid" id="signature-grid" style="display:none;">
+      <!-- Rendered by JS -->
+    </div>
+    <p class="empty-state" id="recipes-empty">No recipes saved yet! Create a juice to save it here.</p>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: ACHIEVEMENTS -->
+  <!-- =============================== -->
+  <div class="screen" id="achievements-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
+      <h2>🏆 Achievements</h2>
+      <div></div>
+    </div>
+    <div class="achievements-grid" id="achievements-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: DAILY CHALLENGES -->
+  <!-- =============================== -->
+  <div class="screen" id="challenges-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
+      <h2>📋 Daily Challenges</h2>
+      <div></div>
+    </div>
+    <div class="challenges-list" id="challenges-list">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: MINIGAME — Memory Match -->
+  <!-- =============================== -->
+  <div class="screen" id="minigame-screen">
+    <div class="game-header">
+      <button class="btn-back" onclick="skipMinigame()">Skip →</button>
+      <h2>🧠 Match the Frutex Drinks!</h2>
+      <div class="minigame-stats">
+        <span>🔄 <b id="mg-moves">0</b></span>
+        <span>⏱️ <b id="mg-time">0s</b></span>
+      </div>
+    </div>
+    <p class="minigame-hint">Flip two cards — find matching Frutex Natural 100% flavors!</p>
+    <div class="memory-grid" id="memory-grid">
+      <!-- Rendered by JS -->
+    </div>
+    <button class="btn-big btn-primary" id="mg-complete-btn" style="display:none;" onclick="finishMinigame()">
+      🎉 Claim Reward & Continue →
+    </button>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: LEVEL UP -->
+  <!-- =============================== -->
+  <div class="screen" id="levelup-screen">
+    <div class="levelup-container">
+      <div class="levelup-icon">🎉</div>
+      <h1 class="levelup-title">Level Up!</h1>
+      <p class="levelup-level" id="levelup-level">Level 2</p>
+      <div class="levelup-unlocks" id="levelup-unlocks">
+        <!-- Rendered by JS -->
+      </div>
+      <button class="btn-big btn-primary" onclick="dismissLevelUp()">Awesome!</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
