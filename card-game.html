@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frutex Card Game</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family: Georgia, serif;
+  background: linear-gradient(160deg, #f9f9f7 0%, #eef5f0 50%, #f5f5f0 100%);
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.5rem;
+}
+.logo { width:160px; margin-bottom:0.5rem; }
+h1 { color:#007042; font-size:1.6rem; margin-bottom:0.3rem; }
+.subtitle { color:#666; font-size:0.9rem; margin-bottom:1.2rem; font-style:italic; }
+.stats { display:flex; gap:1.5rem; margin-bottom:1rem; font-weight:700; color:#007042; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  max-width: 560px; width:100%;
+}
+.card {
+  aspect-ratio: 3/4;
+  perspective: 800px;
+  cursor: pointer;
+}
+.inner {
+  width:100%; height:100%; position:relative;
+  transition: transform 0.5s ease;
+  transform-style: preserve-3d;
+}
+.card.flipped .inner { transform: rotateY(180deg); }
+.front, .back {
+  position:absolute; inset:0; border-radius:8px;
+  backface-visibility: hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.front {
+  background: linear-gradient(135deg, #007042, #005a32);
+  color:#fff; font-weight:700; font-size:0.8rem;
+  border: 2px solid #005a32;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.front-logo { font-size:1.3rem; margin-bottom:0.3rem; }
+.back {
+  background:#fff; transform: rotateY(180deg);
+  border: 3px solid #007042;
+  gap:0.3rem; padding:0.4rem;
+}
+.back img { width:75%; max-height:55%; object-fit:contain; }
+.back .name { font-size:0.7rem; font-weight:700; color:#007042; text-align:center; }
+.card.flipped .back { box-shadow: 0 3px 15px rgba(0,112,66,0.2); }
+.btn {
+  margin-top:1.2rem; padding:0.7rem 2rem;
+  background:#007042; color:#fff; border:none;
+  border-radius:6px; font-size:1rem; font-weight:600;
+  cursor:pointer; font-family:Georgia,serif;
+}
+.btn:hover { filter:brightness(1.1); }
+.toast {
+  position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%);
+  background:#007042; color:#fff; padding:0.6rem 1.5rem;
+  border-radius:30px; font-weight:600; font-size:0.9rem;
+  display:none; z-index:99;
+}
+@media (max-width:480px) {
+  .grid { grid-template-columns: repeat(3, 1fr); gap:0.5rem; }
+  h1 { font-size:1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<img class="logo" src="frutex-logo.svg" alt="Frutex">
+<h1>Frutex Card Game</h1>
+<p class="subtitle">Flip the cards and discover Natural 100% drinks</p>
+
+<div class="stats">
+  <span>🃏 Flipped: <span id="flipped-count">0</span></span>
+</div>
+
+<div class="grid" id="grid"></div>
+<button class="btn" onclick="reshuffle()">🔀 Reshuffle Cards</button>
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  { name:'Strawberry', img:'Natural-Strawberry-200ml.webp' },
+  { name:'Apple',      img:'Natural-Apple-750ml.webp' },
+  { name:'Orange',     img:'Natural-Orange-200ml.webp' },
+  { name:'Peach',      img:'Natural-Peach-200ml.webp' },
+  { name:'Carrot',     img:'Natural-Carrot-200ml.webp' },
+  { name:'Grape',      img:'Natural-Grape-250ml.webp' },
+  { name:'Blueberry',  img:'Natural-Blueberry-200ml.webp' },
+  { name:'Sourcherry', img:'Natural-Sourcherry-200ml.webp' },
+];
+
+var cards = [];
+var flippedCount = 0;
+
+function build() {
+  cards = [];
+  PRODUCTS.forEach(function(p) { cards.push(p); cards.push(p); });
+  shuffle(cards);
+  flippedCount = 0;
+  document.getElementById('flipped-count').textContent = '0';
+  render();
+}
+
+function shuffle(arr) {
+  for (var i = arr.length-1; i>0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+}
+
+function render() {
+  var html = '';
+  cards.forEach(function(c, i) {
+    html +=
+      '<div class="card" onclick="flip(' + i + ')">' +
+        '<div class="inner">' +
+          '<div class="front"><img src="frutex-logo.svg" alt="Frutex" style="width:70%;opacity:0.9"></div>' +
+          '<div class="back">' +
+            '<img src="' + c.img + '" alt="' + c.name + '">' +
+            '<span class="name">Natural 100%<br>' + c.name + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('grid').innerHTML = html;
+}
+
+var flipped = [];
+
+function flip(idx) {
+  if (flipped.length >= 2) return;
+  if (flipped.indexOf(idx) !== -1) return;
+  flipped.push(idx);
+  document.querySelectorAll('.card')[idx].classList.add('flipped');
+  flippedCount++;
+  document.getElementById('flipped-count').textContent = flippedCount;
+
+  if (flipped.length === 2) {
+    var a = flipped[0], b = flipped[1];
+    if (cards[a].name === cards[b].name) {
+      toastMsg('✅ Match! ' + cards[a].name);
+      flipped = [];
+    } else {
+      setTimeout(function() {
+        document.querySelectorAll('.card')[a].classList.remove('flipped');
+        document.querySelectorAll('.card')[b].classList.remove('flipped');
+        flipped = [];
+      }, 700);
+    }
+  }
+}
+
+function reshuffle() {
+  shuffle(cards);
+  flipped = [];
+  flippedCount = 0;
+  document.getElementById('flipped-count').textContent = '0';
+  render();
+  toastMsg('Cards reshuffled!');
+}
+
+function toastMsg(m) {
+  var t = document.getElementById('toast');
+  t.textContent = m; t.style.display = 'block';
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.style.display = 'none'; }, 1800);
+}
+
+build();
+</script>
+</body>
+</html>

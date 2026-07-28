@@ -28,9 +28,10 @@
   <div class="screen active" id="menu-screen">
     <div class="menu-container">
       <div class="logo-area">
-        <img class="logo-drink" src="lucid-origin_Create_a_vibrant_cartoon_style_illustration_of_a_high_quality_colorful_drink_wit-0-removebg-preview.png" alt="Frutex Juice">
+        <img class="logo-drink" src="frutex-logo.svg" alt="Frutex">
         <h1 class="logo-title">Frutex</h1>
         <p class="logo-subtitle">Natural 100% Fruit Juices</p>
+        <p class="player-title" id="menu-title">Junior Juice Maker</p>
       </div>
       <div class="menu-stats">
         <div class="stat-badge">
@@ -38,7 +39,7 @@
           <span id="menu-level">Level 1</span>
         </div>
         <div class="stat-badge">
-          <span class="stat-icon">🪙</span>
+          <span class="stat-icon"><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"></span>
           <span id="menu-coins">0</span>
         </div>
         <div class="stat-badge">
@@ -74,28 +75,30 @@
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
       <div class="game-stats">
-        <span>🪙 <b id="game-coins">0</b></span>
+        <span><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"> <b id="game-coins">0</b></span>
         <span>⭐ Lv.<b id="game-level">1</b></span>
         <span>✨ <b id="game-xp">0</b> XP</span>
       </div>
     </div>
 
     <div class="game-layout">
-      <!-- LEFT: Fruit Selection -->
+      <!-- LEFT: Drink Selection -->
       <div class="panel fruit-panel">
-        <h2 class="panel-title">🍎 Pick Your Fruits</h2>
-        <p class="panel-hint">Drag 2–4 fruits into the blender!</p>
+        <h2 class="panel-title">🧃 Frutex Natural 100%</h2>
+        <p class="panel-hint">Click + to add drinks to your blend</p>
 
-        <!-- Category tabs -->
-        <div class="fruit-tabs" id="fruit-tabs">
-          <button class="fruit-tab active" data-cat="basic">🍏 Basic</button>
-          <button class="fruit-tab" data-cat="citrus">🍋 Citrus</button>
-          <button class="fruit-tab" data-cat="berry">🍓 Berry</button>
-          <button class="fruit-tab" data-cat="tropical">🥭 Tropical</button>
+        <div class="drink-grid" id="drink-grid">
+          <!-- Rendered by JS -->
         </div>
 
-        <div class="fruit-grid" id="fruit-grid">
-          <!-- Rendered by JS -->
+        <!-- Expandable Extra Fruits -->
+        <button class="extra-fruits-toggle" id="extra-fruits-toggle" onclick="toggleExtraFruits()">
+          ➕ Extra Fruits <span class="toggle-arrow" id="toggle-arrow">▼</span>
+        </button>
+        <div class="extra-fruits-panel" id="extra-fruits-panel" style="display:none;">
+          <div class="fruit-grid" id="fruit-grid">
+            <!-- Rendered by JS -->
+          </div>
         </div>
       </div>
 
@@ -169,6 +172,9 @@
         <h3>🍾 Choose Your Bottle</h3>
         <p class="step-hint">Pick a unique bottle shape for your juice</p>
         <div class="design-grid" id="bottle-shapes"></div>
+        <h3 style="margin-top:0.8rem">🎨 Glass Tint</h3>
+        <p class="step-hint">Pick a soft color for the glass</p>
+        <div class="design-grid" id="bottle-colors"></div>
         <button class="btn-step-next btn-primary" onclick="designNext(2)">Next: Cap Color →</button>
       </div>
 
@@ -188,6 +194,9 @@
         <h3>🏷️ Design Your Label</h3>
         <p class="step-hint">Pick a label that tells your juice's story</p>
         <div class="design-grid" id="label-designs"></div>
+        <h3 style="margin-top:0.8rem">🎨 Background Glow</h3>
+        <p class="step-hint">Choose a pastel gradient for your bottle</p>
+        <div class="design-grid" id="bg-gradient-options"></div>
         <div class="step-buttons">
           <button class="btn-step-back" onclick="designNext(2)">← Back</button>
           <button class="btn-step-next btn-primary" onclick="designNext(4)">Next: Name →</button>
@@ -216,22 +225,28 @@
   <!-- =============================== -->
   <div class="screen" id="present-screen">
     <div class="present-container">
-      <div class="customer-area" id="customer-area">
-        <!-- Customer appears here -->
-      </div>
-      <div class="present-juice" id="present-juice">
-        <!-- Juice preview -->
-      </div>
-      <button class="btn-big btn-primary" id="present-btn" onclick="getRating()">
-        🎁 Present Your Juice!
-      </button>
-      <div class="rating-display" id="rating-display" style="display:none;">
-        <!-- Rating stars and feedback -->
-      </div>
-      <button class="btn-big btn-secondary" id="continue-btn" style="display:none;" onclick="finishRound()">
-        Continue →
-      </button>
-    </div>
+          <div class="customer-area" id="customer-area">
+            <!-- Customer appears here -->
+          </div>
+          <div class="customer-order" id="customer-order" style="display:none;">
+            <!-- Order requirements -->
+          </div>
+          <div class="present-juice" id="present-juice">
+            <!-- Juice preview -->
+          </div>
+          <button class="btn-big btn-primary" id="present-btn" onclick="getRating()">
+            🎁 Present Your Juice!
+          </button>
+          <div class="reaction-display" id="reaction-display" style="display:none;">
+            <!-- Animated reaction -->
+          </div>
+          <div class="rating-display" id="rating-display" style="display:none;">
+            <!-- Rating breakdown -->
+          </div>
+          <button class="btn-big btn-secondary" id="continue-btn" style="display:none;" onclick="finishRound()">
+            Continue →
+          </button>
+        </div>
   </div>
 
   <!-- =============================== -->
@@ -241,7 +256,7 @@
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
       <h2>🛒 Shop</h2>
-      <span class="shop-coins">🪙 <b id="shop-coins">0</b></span>
+      <span class="shop-coins"><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"> <b id="shop-coins">0</b></span>
     </div>
     <div class="shop-tabs">
       <button class="shop-tab active" data-cat="fruits">🍎 Fruits</button>
@@ -323,6 +338,18 @@
     <button class="btn-big btn-primary" id="mg-complete-btn" style="display:none;" onclick="finishMinigame()">
       🎉 Claim Reward & Continue →
     </button>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: FRUTEX FACTS -->
+  <!-- =============================== -->
+  <div class="screen" id="facts-screen">
+    <div class="facts-container">
+      <div class="facts-icon" id="facts-icon">🍎</div>
+      <h2 class="facts-title">🍏 Frutex Fact!</h2>
+      <p class="facts-text" id="facts-text"></p>
+      <button class="btn-big btn-primary" onclick="dismissFacts()">Cool! Continue →</button>
+    </div>
   </div>
 
   <!-- =============================== -->
