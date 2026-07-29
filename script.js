@@ -161,6 +161,28 @@ const REACTIONS = {
   1: { emoji: '😕', phrases: ['Sorry, this isn\'t working for me...','That combination didn\'t quite work.','Better luck next time — keep trying!'] },
 };
 
+/** Queue NPC customers with unique personalities */
+const NPC_CUSTOMERS = [
+  { id:'marco', emoji:'🧔', name:'Marco', personality:'Friendly regular who loves fruit blends',
+    img: 'lucid-origin_make_a_cartoon_style_character_that_just_got_back_from_the_pool_he_has_blue_eyes-0-removebg-preview.png',
+    quote:'I\'d love something fresh — surprise me with a tasty blend!',
+    order: { type:'category', cat:'basic' }, tip: 10 },
+  { id:'sophia', emoji:'👩‍🦰', name:'Sophia', personality:'Health-conscious yoga instructor',
+    img: 'lucid-origin_make_a_cartoon_style_charachter_with_hazel_big_eyes_and_long_light_brown_hair_we-0-removebg-preview.png',
+    quote:'Only 3+ fruits please — I need my vitamins!',
+    order: { type:'count', minFruits:3 }, tip: 15 },
+  { id:'luca', emoji:'👦', name:'Luca', personality:'Excited kid who loves sweet drinks',
+    quote:'Make it super sweet and colourful! Extra fruity!',
+    order: { type:'flavor', minSweet:7 }, tip: 8 },
+  { id:'elena', emoji:'👩', name:'Elena', personality:'Busy professional who wants efficiency',
+    img: 'lucid-origin_make_a_cartoon_style_charachter_with_brown_eyes_and_long_brown_hair_with_a_hint_-0-removebg-preview.png',
+    quote:'Quick and crisp — citrus only. I\'m in a hurry!',
+    order: { type:'category', cat:'citrus' }, tip: 12 },
+  { id:'giovanni', emoji:'👨‍🦳', name:'Giovanni', personality:'Retired chef with refined taste',
+    quote:'I know good juice. Blend strawberry with something unexpected.',
+    order: { type:'specific', fruits:['strawberry'] }, tip: 20 },
+];
+
 /** Achievements the player can unlock */
 const ACHIEVEMENTS = [
   { id: 'first_juice',    icon: '🧃', name: 'First Creation',   desc: 'Create your first juice',                    goal: 1,  reward: '50 coins' },
@@ -222,10 +244,50 @@ function updateCoinDisplays(val) {
   if (shopEl) shopEl.textContent = val;
 }
 function getTitle(level) {
-  if (level >= 8) return 'Frutex Champion';
-  if (level >= 5) return 'Master Blender';
-  if (level >= 3) return 'Juice Expert';
+  if (level >= 4) return 'Frutex Champion';
+  if (level >= 3) return 'Master Blender';
+  if (level >= 2) return 'Juice Expert';
   return 'Junior Juice Maker';
+}
+
+/** Check and update level progress after completing a drink */
+function checkLevelProgress(stars, fruitCount) {
+  var goal = LEVEL_GOALS[state.level];
+  if (!goal || state.level > 4) return;
+
+  var made = false;
+  switch (goal.type) {
+    case 'good_drinks':
+      if (stars >= goal.minStars) made = true;
+      break;
+    case 'customer_orders':
+      if (stars >= 3) made = true; // any decent drink counts
+      break;
+    case 'perfect_ratings':
+      if (stars >= goal.minStars) made = true;
+      break;
+    case 'complex_drinks':
+      if (fruitCount >= goal.minFruits && stars >= 3) made = true;
+      break;
+  }
+
+  if (made) {
+    state.levelProgress++;
+    if (state.levelProgress >= goal.target) {
+      state.level++;
+      state.levelProgress = 0;
+      var newGoal = LEVEL_GOALS[state.level];
+      if (newGoal) {
+        showLevelUp(state.level - 1);
+        toast('🎉 Level ' + state.level + '! ' + newGoal.desc);
+      } else {
+        toast('🏆 You beat all levels! You are a Frutex Champion!');
+      }
+    } else {
+      toast('📋 Progress: ' + state.levelProgress + '/' + goal.target + ' — ' + goal.desc);
+    }
+  }
+  saveState();
 }
 
 /** Frutex Signature Drinks — one unlocked per level */
@@ -234,12 +296,15 @@ const SIGNATURE_DRINKS = [
   { level: 2,  name: 'Berry Blast',     emoji: '💥', fruits: ['strawberry','blueberry','grape'],          desc: 'Triple-berry explosion of flavour.',              color: '#a855f7' },
   { level: 3,  name: 'Tropical Storm',  emoji: '🌴', fruits: ['pineapple','mango','banana'],              desc: 'A whirlwind of tropical paradise.',               color: '#ffd93d' },
   { level: 4,  name: 'Green Power',     emoji: '🌿', fruits: ['kiwi','lime','apple'],                     desc: 'Zesty green fuel for the day ahead.',            color: '#7bed9f' },
-  { level: 5,  name: 'Ruby Kiss',       emoji: '💋', fruits: ['cherry','watermelon','strawberry'],         desc: 'Sweet ruby-red romance in a bottle.',             color: '#ff4757' },
-  { level: 6,  name: 'Citrus Zing',     emoji: '⚡', fruits: ['lemon','orange','lime'],                    desc: 'Triple-citrus lightning strike.',                 color: '#fff44f' },
-  { level: 7,  name: 'Dragon Fire',     emoji: '🔥', fruits: ['dragonfruit','mango','pineapple'],          desc: 'Exotic fire from the dragon\'s lair.',            color: '#ff69b4' },
-  { level: 8,  name: 'Berry Melody',    emoji: '🎵', fruits: ['blueberry','cherry','grape','strawberry'],   desc: 'A symphony of four fine berries.',                color: '#7c3aed' },
-  { level: 9,  name: 'Island Breeze',   emoji: '🏝️', fruits: ['pineapple','mango','peach','banana'],       desc: 'Four-fruit island getaway in a glass.',           color: '#ffcc80' },
-  { level: 10, name: 'Frutex Supreme',  emoji: '👑', fruits: ['apple','orange','strawberry','mango','pineapple'], desc: 'The ultimate 5-fruit masterpiece.',        color: '#ff6b35' },
+];
+
+/** Level objectives — mission-based progression */
+const LEVEL_GOALS = [
+  null, // index 0 unused
+  { level: 1, desc: 'Create 2 great drinks', target: 2, type: 'good_drinks', minStars: 4 },
+  { level: 2, desc: 'Serve Marco 3 tasty blends', target: 3, type: 'customer_orders', customer: { name: 'Marco', emoji: '🧔', quote: 'Surprise me with something fresh and fruity!' } },
+  { level: 3, desc: 'Earn 4 perfect ratings', target: 4, type: 'perfect_ratings', minStars: 5 },
+  { level: 4, desc: 'Create 3 mixed drinks with 3+ fruits each', target: 3, type: 'complex_drinks', minFruits: 3 },
 ];
 
 // ============================================================
@@ -253,6 +318,11 @@ let state = {
   coins: 0,
   xp: 0,
   level: 1,
+  levelProgress: 0,         // progress towards current level goal
+
+  // Customer queue system
+  customerQueue: [],        // queued NPC customers for current level
+  currentCustomerIdx: 0,    // which customer is being served
 
   // Unlocks (arrays of IDs)
   unlockedFruits: ['apple', 'orange', 'strawberry', 'peach', 'grape', 'pineapple', 'mango', 'banana'],
@@ -403,7 +473,17 @@ function showScreen(name) {
 
   // Refresh necessary panels
   if (name === 'menu') refreshMenu();
-  if (name === 'game') renderGameScreen();
+  if (name === 'game') {
+    // Generate customer queue for level 2+
+    if (state.level >= 2 && state.customerQueue.length === 0) {
+      generateCustomerQueue();
+    }
+    // Show NPC intro if queue is active with customers to serve
+    if (state.level >= 2 && state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length) {
+      showNpcIntro();
+    }
+    renderGameScreen();
+  }
   if (name === 'design') renderDesignScreen();
   if (name === 'shop') renderShop();
   if (name === 'recipes') renderRecipes();
@@ -453,39 +533,70 @@ function toast(msg) {
 // ============================================================
 
 function spawnParticles(x, y, container, colors) {
-  if (!colors) colors = ['#ff6b35', '#ffd93d', '#2ed573', '#ff4757', '#a855f7', '#0abde3', '#ff6b9d', '#fff'];
-  for (var i = 0; i < 16; i++) {
-    var p = document.createElement('div');
-    p.className = 'particle';
-    var angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.3;
-    var dist = 25 + Math.random() * 50;
-    p.style.left = x + 'px';
-    p.style.top = y + 'px';
-    p.style.width = (3 + Math.random() * 5) + 'px';
-    p.style.height = p.style.width;
-    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-    container.appendChild(p);
-    setTimeout(function() { p.remove(); }, 800);
+  // Only spawn bubbles, no fruit particles — just smooth juice blending
+  for (var i = 0; i < 12; i++) {
+    var b = document.createElement('div');
+    b.className = 'blend-bubble';
+    var size = 4 + Math.random() * 10;
+    b.style.left = (x - 30 + Math.random() * 60) + 'px';
+    b.style.top = (y + 20 + Math.random() * 40) + 'px';
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.animationDelay = (Math.random() * 0.6) + 's';
+    b.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+    container.appendChild(b);
+    setTimeout(function() { b.remove(); }, 2500);
   }
 }
 
 function spawnConfetti() {
   var colors = ['#ff6b35', '#ffd93d', '#2ed573', '#ff4757', '#a855f7', '#0abde3', '#ff6b9d', '#ff9f43'];
-  for (var i = 0; i < 50; i++) {
+  for (var i = 0; i < 30; i++) {
     var c = document.createElement('div');
     c.className = 'confetti';
     c.style.left = Math.random() * 100 + '%';
-    c.style.top = -(10 + Math.random() * 30) + 'px';
+    c.style.top = -(Math.random() * 20) + 'px';
+    c.style.width = (6 + Math.random() * 8) + 'px';
+    c.style.height = c.style.width;
     c.style.background = colors[Math.floor(Math.random() * colors.length)];
-    c.style.width = (6 + Math.random() * 10) + 'px';
-    c.style.height = (6 + Math.random() * 10) + 'px';
-    c.style.animationDuration = (2 + Math.random() * 3) + 's';
-    c.style.animationDelay = Math.random() * 1.2 + 's';
-    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
     document.body.appendChild(c);
-    setTimeout(function() { c.remove(); }, 4500);
+    setTimeout(function(el) { el.remove(); }, 3500, c);
+  }
+}
+
+/** Glowing sparkles for rewards */
+function spawnSparkles(el) {
+  var rect = el.getBoundingClientRect();
+  if (!rect) return;
+  for (var i = 0; i < 15; i++) {
+    var s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = (rect.left + rect.width * 0.3 + Math.random() * rect.width * 0.4) + 'px';
+    s.style.top = (rect.top + rect.height * 0.3) + 'px';
+    s.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(s);
+    setTimeout(function(el) { el.remove(); }, 1600, s);
+  }
+}
+
+/** Juice splash droplets during blending */
+function spawnSplash(container) {
+  for (var i = 0; i < 8; i++) {
+    var s = document.createElement('div');
+    s.className = 'splash-particle';
+    s.style.left = '50%';
+    s.style.top = '60%';
+    var angle = Math.random() * Math.PI * 2;
+    var dist = 20 + Math.random() * 50;
+    s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+    s.style.setProperty('--sy', Math.sin(angle) * dist - 20 + 'px');
+    s.style.width = (2 + Math.random() * 5) + 'px';
+    s.style.height = s.style.width;
+    s.style.background = 'var(--juice-color, #ff6b35)';
+    container.appendChild(s);
+    setTimeout(function(el) { el.remove(); }, 800, s);
   }
 }
 
@@ -496,8 +607,32 @@ function spawnConfetti() {
 function refreshMenu() {
   document.getElementById('menu-level').textContent = 'Level ' + state.level;
   document.getElementById('menu-coins').textContent = state.coins;
-  document.getElementById('menu-xp').textContent = state.xp + ' XP';
   document.getElementById('menu-title').textContent = getTitle(state.level);
+
+  // Update level tab progress
+  for (var i = 1; i <= 4; i++) {
+    var progEl = document.getElementById('lvl-prog-' + i);
+    var tabEl = document.querySelector('.level-tab[data-level="' + i + '"]');
+    if (!progEl || !tabEl) continue;
+    var goal = LEVEL_GOALS[i];
+    tabEl.classList.remove('locked', 'active');
+    if (i < state.level) {
+      progEl.textContent = '✓ DONE';
+      tabEl.classList.add('done');
+    } else if (i === state.level) {
+      progEl.textContent = state.levelProgress + '/' + goal.target;
+      tabEl.classList.add('active');
+    } else {
+      progEl.textContent = '0/' + goal.target;
+      tabEl.classList.add('locked');
+    }
+  }
+}
+
+function setLevelTab(level) {
+  if (level > state.level) return; // locked
+  // Navigate to game
+  showScreen('game');
 }
 
 // ============================================================
@@ -515,6 +650,8 @@ function renderGameScreen() {
   renderDrinkGrid();
   renderBlenderSlots();
   updateMixInfo();
+  updateQueueDisplay();
+  showNpcPortrait();
   document.getElementById('game-coins').textContent = state.coins;
   document.getElementById('game-level').textContent = state.level;
   document.getElementById('game-xp').textContent = state.xp + ' XP';
@@ -556,6 +693,7 @@ function addDrink(id) {
   state.blenderFruits = state.blenderFruits.filter(Boolean);
   if (state.blenderFruits.length >= 4) { toast('Blender is full! (max 4)'); return; }
   state.blenderFruits.push(id);
+  spawnFallingFruit(id);
   sfxDrop();
   renderDrinkGrid();
   renderBlenderSlots();
@@ -736,28 +874,41 @@ function clearBlender() {
 }
 
 /** Animate a fruit emoji falling into the blender jar */
-function spawnFallingFruit(emoji, slotIdx) {
+function spawnFallingFruit(fruitId) {
   var jar = document.getElementById('blender-jar');
+  if (!jar) return;
   var jarRect = jar.getBoundingClientRect();
 
-  // Slot positions within the jar (2x2 grid)
-  var col = slotIdx % 2;
-  var row = Math.floor(slotIdx / 2);
-  var startX = jarRect.left + jarRect.width / 2;
-  var startY = jarRect.top - 10;
-  var targetX = jarRect.left + jarRect.width * (0.25 + col * 0.5);
-  var targetY = jarRect.top  + jarRect.height * (0.25 + row * 0.5);
+  // Find product image for this drink
+  var imgSrc = '';
+  var products = [
+    {id:'strawberry',img:'Natural-Strawberry-200ml.webp'},{id:'apple',img:'Natural-Apple-750ml.webp'},
+    {id:'orange',img:'Natural-Orange-200ml.webp'},{id:'peach',img:'Natural-Peach-200ml.webp'},
+    {id:'carrot',img:'Natural-Carrot-200ml.webp'},{id:'grape',img:'Natural-Grape-250ml.webp'},
+    {id:'blueberry',img:'Natural-Blueberry-200ml.webp'},{id:'sourcherry',img:'Natural-Sourcherry-200ml.webp'},
+  ];
+  var found = products.find(function(p){return p.id===fruitId;});
+  if (found) imgSrc = found.img;
 
-  var fruit = document.createElement('div');
-  fruit.className = 'falling-fruit';
-  fruit.textContent = emoji;
-  fruit.style.left = startX + 'px';
-  fruit.style.top  = startY + 'px';
-  fruit.style.setProperty('--dx', (targetX - startX) + 'px');
-  fruit.style.setProperty('--dy', (targetY - startY) + 'px');
-  document.body.appendChild(fruit);
+  var startX = jarRect.left + jarRect.width * 0.15 + Math.random() * jarRect.width * 0.7;
+  var targetX = jarRect.left + jarRect.width / 2;
+  var targetY = jarRect.bottom - 30;
 
-  setTimeout(function() { fruit.remove(); }, 500);
+  var el = document.createElement('div');
+  el.className = 'falling-fruit';
+  el.style.left = startX + 'px';
+  el.style.top  = '0px';
+  el.style.setProperty('--dx', (targetX - startX) + 'px');
+  el.style.setProperty('--dy', targetY + 'px');
+
+  if (imgSrc) {
+    el.innerHTML = '<img src="' + imgSrc + '" style="width:40px;height:60px;object-fit:contain;">';
+  } else {
+    el.textContent = '🧃';
+  }
+  document.body.appendChild(el);
+
+  setTimeout(function() { el.remove(); }, 1200);
 }
 
 function renderBlenderSlots() {
@@ -900,6 +1051,7 @@ function startBlend() {
   var blenderArea = document.getElementById('blender-area');
   var rect = blenderArea.getBoundingClientRect();
   spawnParticles(rect.width / 2, rect.height / 2, blenderArea);
+  spawnSplash(blenderArea);
 
   // After animation, create the juice and go to design
   setTimeout(function() {
@@ -1093,14 +1245,14 @@ function finishMinigame() {
   clearInterval(memoryInterval);
   document.querySelectorAll('.confetti').forEach(function(c) { c.remove(); });
   saveState();
-  showScreen('design');
+  showScreen('present');
 }
 
 function skipMinigame() {
   clearInterval(memoryInterval);
   document.querySelectorAll('.confetti').forEach(function(c) { c.remove(); });
   toast('Minigame skipped.');
-  showScreen('design');
+  showScreen('present');
 }
 
 // ============================================================
@@ -1346,6 +1498,112 @@ function updateDesignPreview() {
 // ============================================================
 
 var currentCustomer = null;
+var npcRecipe = null;  // Marco's requested recipe for level 2
+
+/** Generate customer queue based on level */
+function generateCustomerQueue() {
+  var marco  = NPC_CUSTOMERS.find(function(c) { return c.id === 'marco'; });
+  var sophia = NPC_CUSTOMERS.find(function(c) { return c.id === 'sophia'; });
+  var elena  = NPC_CUSTOMERS.find(function(c) { return c.id === 'elena'; });
+
+  if (state.level === 2) {
+    state.customerQueue = [marco];
+  } else if (state.level === 3) {
+    state.customerQueue = [sophia, marco];
+  } else if (state.level === 4) {
+    state.customerQueue = [elena, sophia, marco];
+  } else {
+    var shuffled = NPC_CUSTOMERS.slice().sort(function() { return Math.random() - 0.5; });
+    var count = 5;
+    state.customerQueue = shuffled.slice(0, Math.min(count, shuffled.length));
+  }
+  state.currentCustomerIdx = 0;
+}
+
+/** Get next customer from queue, or show queue-complete message */
+function nextCustomer() {
+  state.currentCustomerIdx++;
+  if (state.currentCustomerIdx >= state.customerQueue.length) {
+    state.customerQueue = [];
+    state.currentCustomerIdx = 0;
+    checkLevelProgress(4, state.blenderFruits.length || 3);
+    toast('All customers served! ✅');
+    setTimeout(function() { showScreen('menu'); }, 1500);
+    return null;
+  }
+  // Clear blender and go to game screen for next customer
+  state.blenderFruits = [];
+  state.currentJuice = null;
+  renderBlenderSlots();
+  showScreen('game');
+  toast('Next customer: ' + state.customerQueue[state.currentCustomerIdx].name + '!');
+  return state.customerQueue[state.currentCustomerIdx];
+}
+
+/** Show queue status on game HUD */
+function updateQueueDisplay() {
+  var el = document.getElementById('queue-display');
+  if (!el) return;
+  if (state.customerQueue.length === 0) { el.innerHTML = ''; return; }
+  var html = '<span style="font-size:0.75rem;color:var(--text-muted)">Queue: </span>';
+  for (var i = state.currentCustomerIdx; i < state.customerQueue.length; i++) {
+    var c = state.customerQueue[i];
+    html += '<span style="' + (i === state.currentCustomerIdx ? 'font-size:1.2rem' : 'opacity:0.4') + '">' + c.emoji + '</span>';
+  }
+  el.innerHTML = html;
+}
+
+/** Show NPC intro — customer tells you what they want */
+function showNpcIntro() {
+  var customer = state.customerQueue[state.currentCustomerIdx];
+  if (!customer) return;
+
+  document.getElementById('npc-intro').style.display = 'flex';
+
+  // Show customer image if available, otherwise hide
+  if (customer.img) {
+    document.getElementById('npc-intro-img').src = customer.img;
+    document.getElementById('npc-intro-img').style.display = '';
+  } else {
+    document.getElementById('npc-intro-img').style.display = 'none';
+  }
+
+  document.getElementById('npc-intro-quote').textContent = '"' + customer.quote + '"';
+  document.getElementById('npc-intro-order').textContent = '— ' + customer.name;
+  if (customer.order) {
+    var orderText = customer.order.type === 'category' ? 'Wants ' + customer.order.cat + ' fruits' :
+                    customer.order.type === 'specific' ? 'Must include ' + customer.order.fruits.join(' & ') :
+                    customer.order.type === 'count' ? 'Wants ' + customer.order.minFruits + '+ fruits' :
+                    customer.order.type === 'flavor' ? 'Sweetness level ' + customer.order.minSweet + '+' : '';
+    document.getElementById('npc-intro-order').textContent += ' • ' + orderText;
+  }
+}
+
+function dismissNpcIntro() {
+  document.getElementById('npc-intro').style.display = 'none';
+}
+
+/** Show NPC portrait on the right panel while blending */
+function showNpcPortrait() {
+  var portrait = document.getElementById('npc-portrait');
+  if (!portrait) return;
+  var q = state.customerQueue;
+  if (q.length === 0 || state.currentCustomerIdx >= q.length) { portrait.style.display = 'none'; return; }
+  var c = q[state.currentCustomerIdx];
+  portrait.style.display = 'flex';
+  document.getElementById('npc-portrait-name').textContent = c.name;
+  var ot = c.order.type === 'category' ? 'Wants ' + c.order.cat + ' fruits' :
+           c.order.type === 'specific' ? 'Must include ' + c.order.fruits.join(' & ') :
+           c.order.type === 'count' ? 'Wants ' + c.order.minFruits + '+ fruits' :
+           c.order.type === 'flavor' ? 'Sweetness ' + c.order.minSweet + '+' : '';
+  document.getElementById('npc-portrait-order').textContent = ot;
+  if (c.img) {
+    document.getElementById('npc-portrait-img').src = c.img;
+    document.getElementById('npc-portrait-img').style.display = '';
+  } else {
+    document.getElementById('npc-portrait-img').style.display = 'none';
+  }
+}
 
 function presentToCustomer() {
   if (!state.currentJuice) {
@@ -1355,8 +1613,23 @@ function presentToCustomer() {
 
   updateJuiceName();
 
-  // Pick random customer
+  // Level 2+: pull customer from queue
+  if (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length) {
+    var qc = state.customerQueue[state.currentCustomerIdx];
+    currentCustomer = {
+      name: qc.name, emoji: qc.emoji, quote: qc.quote,
+      isNPC: true, order: qc.order, tip: qc.tip,
+    };
+    npcRecipe = null;
+
+    // NPC: skip presentation screen, rate immediately then show reaction
+    getRating();
+    return;
+  }
+
+  // Non-NPC flow: random customer
   currentCustomer = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
+  npcRecipe = null;
 
   // Render customer
   var area = document.getElementById('customer-area');
@@ -1368,15 +1641,26 @@ function presentToCustomer() {
   // Show order
   var orderEl = document.getElementById('customer-order');
   orderEl.style.display = '';
-  orderEl.innerHTML = '📋 <b>Order:</b> ' + currentCustomer.bonusText + ' — earn bonus coins!';
+  if (npcRecipe) {
+    orderEl.innerHTML = '📋 <b>Marco wants:</b> ' + npcRecipe.map(function(id) {
+      var f = ALL_FRUITS.find(function(fr) { return fr.id === id; });
+      return f ? fruitIcon(f) + ' ' + f.name : id;
+    }).join(' + ');
+  } else if (currentCustomer.bonusText) {
+    orderEl.innerHTML = '📋 <b>Order:</b> ' + currentCustomer.bonusText + ' — earn bonus coins!';
+  } else {
+    orderEl.innerHTML = '📋 <b>Make something tasty!</b>';
+  }
 
-  // Juice preview with pouring animation
+  // Juice cup color
   var juiceEl = document.getElementById('present-juice');
-  juiceEl.innerHTML = '🧃';
-  juiceEl.className = 'present-juice pouring';
   juiceEl.style.display = '';
+  var cupBody = document.getElementById('cup-body');
+  if (cupBody && state.currentJuice) {
+    cupBody.style.background = state.currentJuice.color;
+  }
 
-  document.getElementById('reaction-display').style.display = 'none';
+  // NPC: skip presentation screen, rate immediately then show reaction
   document.getElementById('rating-display').style.display = 'none';
   document.getElementById('continue-btn').style.display = 'none';
   document.getElementById('present-btn').style.display = '';
@@ -1437,7 +1721,14 @@ function getRating() {
   appearanceScore = Math.min(100, appearanceScore);
 
   // Order bonus
-  if (orderFulfilled) {
+  var npcBonus = 0;
+  if (npcRecipe && customer.isNPC) {
+    // How many of Marco's requested fruits did we include?
+    var hits = npcRecipe.filter(function(r) { return juice.fruits.indexOf(r) !== -1; }).length;
+    var matchPct = hits / npcRecipe.length;
+    npcBonus = Math.round(matchPct * 25);
+    tasteScore = Math.min(100, tasteScore + npcBonus);
+  } else if (orderFulfilled) {
     tasteScore = Math.min(100, tasteScore + 15);
   }
 
@@ -1497,10 +1788,12 @@ function getRating() {
   if (stars >= 3) saveRecipe(juice, design, stars, overallScore);
   checkAchievements();
   updateDailyChallengeProgress(juice, design, stars);
+  checkLevelProgress(stars, juice.fruits.length);
 
   sfxCoins();
   if (stars >= 4) sfxSuccess();
   spawnConfetti();
+  spawnSparkles(document.getElementById('rating-display'));
 
   if (state.level > oldLevel) {
     setTimeout(function() { showLevelUp(oldLevel + 1); }, 1500);

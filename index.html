@@ -17,10 +17,37 @@
   <audio id="sfx-click" preload="auto"></audio>
   <audio id="sfx-success" preload="auto"></audio>
   <audio id="sfx-coins" preload="auto"></audio>
-  <button id="mute-btn" class="mute-btn" onclick="toggleMute()" title="Toggle Music">🔊</button>
+  <button id="mute-btn" class="mute-btn" onclick="toggleMute()" title="Toggle Music"><svg class="icon"><use href="#i-sound"/></svg></button>
 
   <!-- ===== TOAST ===== -->
   <div id="toast" class="toast"></div>
+
+<!-- SVG Icon Library -->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/></symbol>
+    <symbol id="i-drink" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="2" rx="1" fill="currentColor"/><rect x="6" y="4" width="12" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 4h8l3 3h5v13H4z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m1 0l-1 14H8L7 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.8" fill="#e74c3c"/><circle cx="15" cy="8" r="1.8" fill="#f39c12"/><circle cx="7" cy="14" r="1.8" fill="#2ecc71"/><circle cx="15" cy="16" r="1.8" fill="#3498db"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M2 3h8l12 11-8 8L2 11z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7" cy="8" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="2" width="4" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="20" cy="12" r="1.5" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor" opacity="0.7"/><circle cx="16" cy="6" r="1" fill="currentColor" opacity="0.7"/><circle cx="6" cy="17" r="1" fill="currentColor" opacity="0.5"/><circle cx="18" cy="17" r="1" fill="currentColor" opacity="0.5"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 2h12v5a4 4 0 01-4 4h-4a4 4 0 01-4-4V2z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 6H3a2 2 0 000 4h3m12-4h3a2 2 0 010 4h-3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 15v5m-4 2h8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M9 3h6a1 1 0 011 1v1H8V4a1 1 0 011-1z" fill="currentColor" opacity="0.3"/><rect x="6" y="5" width="12" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 10h4M10 14h4M10 18h3" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M2 7l4 9h12l4-9-5.5 4L12 3 7.5 11z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5"/></symbol>
+    <symbol id="i-mix" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="9" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 8v2a9 4 0 0018 0V8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v14M3 12h18" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7c0-2 2-4 4-1s4-3 4 1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1.5"/><circle cx="20" cy="21" r="1.5"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6l3 3M15 2l-3 3-3-3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  </defs>
+</svg>
 
   <!-- =============================== -->
   <!-- SCREEN: MAIN MENU -->
@@ -35,36 +62,46 @@
       </div>
       <div class="menu-stats">
         <div class="stat-badge">
-          <span class="stat-icon">⭐</span>
+          <span class="stat-icon"><svg class="icon"><use href="#i-star"/></svg></span>
           <span id="menu-level">Level 1</span>
         </div>
         <div class="stat-badge">
           <span class="stat-icon"><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"></span>
           <span id="menu-coins">0</span>
         </div>
-        <div class="stat-badge">
-          <span class="stat-icon">✨</span>
-          <span id="menu-xp">0 XP</span>
-        </div>
       </div>
-      <div class="menu-buttons">
-        <button class="btn-menu btn-primary" onclick="showScreen('game')">
-          <span class="btn-icon">🧃</span>Create New Juice
+
+      <!-- Level Tabs -->
+      <div class="level-tabs" id="level-tabs">
+        <button class="level-tab active" data-level="1" onclick="setLevelTab(1)">
+          <span class="level-num">1</span>
+          <span class="level-label">Junior Juice Maker</span>
+          <span class="level-goal">Make 2 great drinks</span>
+          <span class="level-prog" id="lvl-prog-1">0/2</span>
         </button>
-        <button class="btn-menu btn-secondary" onclick="showScreen('shop')">
-          <span class="btn-icon">🛒</span>Shop
+        <button class="level-tab" data-level="2" onclick="setLevelTab(2)">
+          <span class="level-num">2</span>
+          <span class="level-label">Juice Expert</span>
+          <span class="level-goal">Serve Marco 3 blends</span>
+          <span class="level-prog" id="lvl-prog-2">0/3</span>
         </button>
-        <button class="btn-menu btn-secondary" onclick="showScreen('recipes')">
-          <span class="btn-icon">📖</span>Recipe Book
+        <button class="level-tab" data-level="3" onclick="setLevelTab(3)">
+          <span class="level-num">3</span>
+          <span class="level-label">Master Blender</span>
+          <span class="level-goal">4 perfect ratings</span>
+          <span class="level-prog" id="lvl-prog-3">0/4</span>
         </button>
-        <button class="btn-menu btn-secondary" onclick="showScreen('achievements')">
-          <span class="btn-icon">🏆</span>Achievements
-        </button>
-        <button class="btn-menu btn-accent" onclick="showScreen('challenges')">
-          <span class="btn-icon">📋</span>Daily Challenges
+        <button class="level-tab" data-level="4" onclick="setLevelTab(4)">
+          <span class="level-num">4</span>
+          <span class="level-label">Frutex Champion</span>
+          <span class="level-goal">3 complex drinks</span>
+          <span class="level-prog" id="lvl-prog-4">0/3</span>
         </button>
       </div>
-      <button class="btn-reset" onclick="resetGame()">🔄 Reset Progress</button>
+
+      <button class="btn-menu btn-primary btn-big" onclick="showScreen('game')"><svg class="icon"><use href="#i-drink"/></svg> Create New Juice</button>
+            <button class="btn-menu btn-secondary" onclick="showScreen('recipes')"><svg class="icon"><use href="#i-book"/></svg> Recipe Book</button>
+            <button class="btn-reset" onclick="resetGame()"><svg class="icon"><use href="#i-refresh"/></svg> Reset Progress</button>
     </div>
   </div>
 
@@ -72,19 +109,34 @@
   <!-- SCREEN: FRUIT SELECTION & BLENDING -->
   <!-- =============================== -->
   <div class="screen" id="game-screen">
+    <!-- NPC Intro Overlay (for level 2+) -->
+    <div class="npc-intro" id="npc-intro" style="display:none;">
+      <div class="npc-intro-content">
+        <img class="npc-intro-img" id="npc-intro-img" src="" alt="Customer">
+        <div class="npc-speech-bubble" id="npc-speech-bubble">
+          <p id="npc-intro-quote">Hello!</p>
+          <p class="npc-intro-order" id="npc-intro-order"></p>
+        </div>
+        <button class="btn-npc-go" onclick="dismissNpcIntro()">
+          Start Blending →
+        </button>
+      </div>
+    </div>
+
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
       <div class="game-stats">
+        <span id="queue-display"></span>
         <span><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"> <b id="game-coins">0</b></span>
-        <span>⭐ Lv.<b id="game-level">1</b></span>
-        <span>✨ <b id="game-xp">0</b> XP</span>
+        <span><svg class="icon"><use href="#i-star"/></svg> Lv.<b id="game-level">1</b></span>
+                <span><svg class="icon"><use href="#i-sparkle"/></svg> <b id="game-xp">0</b> XP</span>
       </div>
     </div>
 
     <div class="game-layout">
       <!-- LEFT: Drink Selection -->
       <div class="panel fruit-panel">
-        <h2 class="panel-title">🧃 Frutex Natural 100%</h2>
+        <h2 class="panel-title"><svg class="icon"><use href="#i-drink"/></svg> Frutex Natural 100%</h2>
         <p class="panel-hint">Click + to add drinks to your blend</p>
 
         <div class="drink-grid" id="drink-grid">
@@ -93,8 +145,8 @@
 
         <!-- Expandable Extra Fruits -->
         <button class="extra-fruits-toggle" id="extra-fruits-toggle" onclick="toggleExtraFruits()">
-          ➕ Extra Fruits <span class="toggle-arrow" id="toggle-arrow">▼</span>
-        </button>
+                  <svg class="icon"><use href="#i-plus"/></svg> Extra Fruits <span class="toggle-arrow" id="toggle-arrow">▼</span>
+                </button>
         <div class="extra-fruits-panel" id="extra-fruits-panel" style="display:none;">
           <div class="fruit-grid" id="fruit-grid">
             <!-- Rendered by JS -->
@@ -104,7 +156,7 @@
 
       <!-- CENTER: Blender -->
       <div class="panel blender-panel">
-        <h2 class="panel-title">🌀 The Blender</h2>
+        <h2 class="panel-title"><svg class="icon"><use href="#i-mix"/></svg> The Blender</h2>
         <div class="blender-area" id="blender-area">
           <div class="blender-machine">
             <div class="blender-lid" id="blender-lid"></div>
@@ -118,16 +170,22 @@
               <div class="blender-juice" id="blender-juice" style="display:none;"></div>
             </div>
             <div class="blender-base">
-              <div class="blender-button" id="blend-btn" onclick="startBlend()">⚡ BLEND!</div>
+              <div class="blender-button" id="blend-btn" onclick="startBlend()"><svg class="icon"><use href="#i-bolt"/></svg> BLEND!</div>
             </div>
           </div>
         </div>
-        <button class="btn-clear" onclick="clearBlender()">🗑️ Clear All</button>
+        <button class="btn-clear" onclick="clearBlender()"><svg class="icon"><use href="#i-trash"/></svg> Clear All</button>
       </div>
 
-      <!-- RIGHT: Recipe Info -->
+      <!-- RIGHT: Recipe Info + NPC -->
       <div class="panel info-panel">
-        <h2 class="panel-title">📝 Current Mix</h2>
+        <!-- NPC Customer Portrait -->
+        <div class="npc-portrait" id="npc-portrait" style="display:none;">
+          <img class="npc-portrait-img" id="npc-portrait-img" src="" alt="Customer">
+          <span class="npc-portrait-name" id="npc-portrait-name"></span>
+          <span class="npc-portrait-order" id="npc-portrait-order"></span>
+        </div>
+        <h2 class="panel-title"><svg class="icon"><use href="#i-mix"/></svg> Current Mix</h2>
         <div class="mix-info" id="mix-info">
           <p class="mix-empty">Add fruits to the blender to see your mix!</p>
         </div>
@@ -142,7 +200,7 @@
   <div class="screen" id="design-screen">
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('game')">← Back</button>
-      <h2>🎨 Design Your Bottle</h2>
+      <h2><svg class="icon"><use href="#i-palette"/></svg> Design Your Bottle</h2>
       <span class="design-step-label" id="design-step-label">Step 1/4</span>
     </div>
 
@@ -169,10 +227,10 @@
 
       <!-- STEP 1: Bottle Shape -->
       <div class="design-step active" id="design-step-1">
-        <h3>🍾 Choose Your Bottle</h3>
+        <h3><svg class="icon"><use href="#i-bottle"/></svg> Choose Your Bottle</h3>
         <p class="step-hint">Pick a unique bottle shape for your juice</p>
         <div class="design-grid" id="bottle-shapes"></div>
-        <h3 style="margin-top:0.8rem">🎨 Glass Tint</h3>
+        <h3 style="margin-top:0.8rem"><svg class="icon"><use href="#i-palette"/></svg> Glass Tint</h3>
         <p class="step-hint">Pick a soft color for the glass</p>
         <div class="design-grid" id="bottle-colors"></div>
         <button class="btn-step-next btn-primary" onclick="designNext(2)">Next: Cap Color →</button>
@@ -180,7 +238,7 @@
 
       <!-- STEP 2: Cap Color -->
       <div class="design-step" id="design-step-2">
-        <h3>🧢 Pick a Cap</h3>
+        <h3><svg class="icon"><use href="#i-cap"/></svg> Pick a Cap</h3>
         <p class="step-hint">Choose the cap that matches your style</p>
         <div class="design-grid" id="cap-colors"></div>
         <div class="step-buttons">
@@ -191,10 +249,10 @@
 
       <!-- STEP 3: Label Design -->
       <div class="design-step" id="design-step-3">
-        <h3>🏷️ Design Your Label</h3>
+        <h3><svg class="icon"><use href="#i-tag"/></svg> Design Your Label</h3>
         <p class="step-hint">Pick a label that tells your juice's story</p>
         <div class="design-grid" id="label-designs"></div>
-        <h3 style="margin-top:0.8rem">🎨 Background Glow</h3>
+        <h3 style="margin-top:0.8rem"><svg class="icon"><use href="#i-palette"/></svg> Background Glow</h3>
         <p class="step-hint">Choose a pastel gradient for your bottle</p>
         <div class="design-grid" id="bg-gradient-options"></div>
         <div class="step-buttons">
@@ -205,7 +263,7 @@
 
       <!-- STEP 4: Name Your Juice -->
       <div class="design-step" id="design-step-4">
-        <h3>📛 Name Your Creation</h3>
+        <h3><svg class="icon"><use href="#i-tag"/></svg> Name Your Creation</h3>
         <p class="step-hint">Give your juice a memorable name</p>
         <input type="text" class="juice-name-input" id="juice-name-input"
                placeholder="e.g. Tropical Sunrise" maxlength="25"
@@ -213,7 +271,7 @@
         <div class="step-buttons">
           <button class="btn-step-back" onclick="designNext(3)">← Back</button>
           <button class="btn-big btn-primary" onclick="presentToCustomer()">
-            🎯 Present to Customer!
+            <svg class="icon"><use href="#i-target"/></svg> Present to Customer!
           </button>
         </div>
       </div>
@@ -232,11 +290,15 @@
             <!-- Order requirements -->
           </div>
           <div class="present-juice" id="present-juice">
-            <!-- Juice preview -->
-          </div>
-          <button class="btn-big btn-primary" id="present-btn" onclick="getRating()">
-            🎁 Present Your Juice!
-          </button>
+              <!-- Juice cup shown here -->
+              <div class="juice-cup" id="juice-cup">
+                <div class="cup-body" id="cup-body"></div>
+                <div class="cup-base"></div>
+              </div>
+            </div>
+            <button class="btn-big btn-primary" id="present-btn" onclick="getRating()">
+              <svg class="icon"><use href="#i-gift"/></svg> Give to Customer
+            </button>
           <div class="reaction-display" id="reaction-display" style="display:none;">
             <!-- Animated reaction -->
           </div>
@@ -255,14 +317,14 @@
   <div class="screen" id="shop-screen">
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
-      <h2>🛒 Shop</h2>
+      <h2><svg class="icon"><use href="#i-cart"/></svg> Shop</h2>
       <span class="shop-coins"><img class="coin-icon" src="gpt-image-2_create_a_shiny_coing_cartoon_style_with_a_F_in_the_midddle-0-removebg-preview.png" alt="Coins"> <b id="shop-coins">0</b></span>
     </div>
     <div class="shop-tabs">
-      <button class="shop-tab active" data-cat="fruits">🍎 Fruits</button>
-      <button class="shop-tab" data-cat="bottles">🍾 Bottles</button>
-      <button class="shop-tab" data-cat="labels">🏷️ Labels</button>
-      <button class="shop-tab" data-cat="boosters">⚡ Boosters</button>
+      <button class="shop-tab active" data-cat="fruits"><svg class="icon"><use href="#i-star"/></svg> Fruits</button>
+            <button class="shop-tab" data-cat="bottles"><svg class="icon"><use href="#i-bottle"/></svg> Bottles</button>
+            <button class="shop-tab" data-cat="labels"><svg class="icon"><use href="#i-tag"/></svg> Labels</button>
+            <button class="shop-tab" data-cat="boosters"><svg class="icon"><use href="#i-bolt"/></svg> Boosters</button>
     </div>
     <div class="shop-grid" id="shop-grid">
       <!-- Rendered by JS -->
@@ -275,12 +337,12 @@
   <div class="screen" id="recipes-screen">
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
-      <h2>📖 Recipe Book</h2>
+      <h2><svg class="icon"><use href="#i-book"/></svg> Recipe Book</h2>
       <div></div>
     </div>
     <div class="shop-tabs" id="recipe-tabs">
-      <button class="shop-tab active" data-cat="my">🧃 My Recipes</button>
-      <button class="shop-tab" data-cat="signature">👑 Frutex Signature</button>
+      <button class="shop-tab active" data-cat="my"><svg class="icon"><use href="#i-drink"/></svg> My Recipes</button>
+              <button class="shop-tab" data-cat="signature"><svg class="icon"><use href="#i-crown"/></svg> Frutex Signature</button>
     </div>
     <div class="recipes-grid" id="recipes-grid">
       <!-- Rendered by JS -->
@@ -297,7 +359,7 @@
   <div class="screen" id="achievements-screen">
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
-      <h2>🏆 Achievements</h2>
+      <h2><svg class="icon"><use href="#i-trophy"/></svg> Achievements</h2>
       <div></div>
     </div>
     <div class="achievements-grid" id="achievements-grid">
@@ -311,7 +373,7 @@
   <div class="screen" id="challenges-screen">
     <div class="game-header">
       <button class="btn-back" onclick="showScreen('menu')">← Menu</button>
-      <h2>📋 Daily Challenges</h2>
+      <h2><svg class="icon"><use href="#i-clipboard"/></svg> Daily Challenges</h2>
       <div></div>
     </div>
     <div class="challenges-list" id="challenges-list">
@@ -325,7 +387,7 @@
   <div class="screen" id="minigame-screen">
     <div class="game-header">
       <button class="btn-back" onclick="skipMinigame()">Skip →</button>
-      <h2>🧠 Match the Frutex Drinks!</h2>
+      <h2><svg class="icon"><use href="#i-star"/></svg> Match the Frutex Drinks!</h2>
       <div class="minigame-stats">
         <span>🔄 <b id="mg-moves">0</b></span>
         <span>⏱️ <b id="mg-time">0s</b></span>
