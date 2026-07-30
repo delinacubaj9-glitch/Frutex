@@ -82,20 +82,20 @@
         <button class="level-tab" data-level="2" onclick="setLevelTab(2)">
           <span class="level-num">2</span>
           <span class="level-label">Juice Expert</span>
-          <span class="level-goal">Serve Marco 3 blends</span>
+          <span class="level-goal">Serve Marco a delicious drink</span>
           <span class="level-prog" id="lvl-prog-2">0/3</span>
         </button>
         <button class="level-tab" data-level="3" onclick="setLevelTab(3)">
           <span class="level-num">3</span>
           <span class="level-label">Master Blender</span>
-          <span class="level-goal">4 perfect ratings</span>
+          <span class="level-goal">Serve all 3 customers</span>
           <span class="level-prog" id="lvl-prog-3">0/4</span>
         </button>
         <button class="level-tab" data-level="4" onclick="setLevelTab(4)">
           <span class="level-num">4</span>
           <span class="level-label">Frutex Champion</span>
-          <span class="level-goal">3 complex drinks</span>
-          <span class="level-prog" id="lvl-prog-4">0/3</span>
+          <span class="level-goal">Make the customers happy!</span>
+                    <span class="level-prog" id="lvl-prog-4">0/3</span>
         </button>
       </div>
 
@@ -429,6 +429,84 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- =============================== -->
+  <!-- SCREEN: FRUIT DETECTIVE -->
+  <!-- =============================== -->
+  <div class="screen" id="detective-screen">
+    <div class="detective-container">
+      <div class="detective-header">
+        <h2>🔍 Fruit Detective</h2>
+        <div class="detective-timer">
+          <div class="timer-bar" id="detective-timer-bar"></div>
+        </div>
+        <div class="detective-stats">
+          <span>🎯 Score: <b id="detective-score">0</b></span>
+          <span>⏱ <b id="detective-time">40s</b></span>
+        </div>
+      </div>
+      <div class="detective-clue" id="detective-clue">
+        <p class="clue-text" id="clue-text">What will the customer ask for?</p>
+      </div>
+      <div class="detective-options" id="detective-options">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: BLIND TASTE CHALLENGE (Level 3) -->
+  <!-- =============================== -->
+  <div class="screen" id="blind-screen">
+    <div class="blind-layout">
+      <!-- Left: NPC Frutex worker -->
+      <div class="blind-npc">
+        <img class="blind-npc-img" id="blind-npc-img" src="" alt="Frutex Worker">
+        <span class="blind-npc-name" id="blind-npc-name">Chef Giovanni</span>
+        <span class="blind-npc-sub" id="blind-npc-sub">Tasting...</span>
+      </div>
+      <!-- Center: Clues + timer -->
+      <div class="blind-main">
+        <div class="blind-timer-bar"><div class="blind-timer-fill" id="blind-timer-fill"></div></div>
+        <div class="blind-timer-text">⏱ <b id="blind-time">20s</b> | 🎯 <b id="blind-score">0</b></div>
+        <div class="blind-clue-box" id="blind-clue-box">
+          <p class="blind-clue-text" id="blind-clue-text">"Hmm, let me taste this..."</p>
+        </div>
+        <div class="blind-options" id="blind-options">
+          <!-- 3 option cards rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================== -->
+  <!-- SCREEN: FRUIT FRESHNESS SORT (Level 4) -->
+  <!-- =============================== -->
+  <div class="screen" id="sort-screen">
+    <div class="sort-header">
+      <div class="sort-timer-bar"><div class="sort-timer-fill" id="sort-timer-fill"></div></div>
+      <div class="sort-stats">
+        <span>⏱ <b id="sort-time">30s</b></span>
+        <span>🎯 <b id="sort-score">0</b></span>
+        <span id="sort-combo" style="display:none;color:var(--accent-gold);font-weight:700"></span>
+      </div>
+    </div>
+    <div class="sort-conveyor" id="sort-conveyor">
+      <!-- Fruits slide across here -->
+    </div>
+    <div class="sort-bins">
+      <div class="sort-bin sort-bin-fresh" id="bin-fresh" ondragover="allowDrop(event)" ondrop="dropSort(event,'fresh')">
+        <img src="gpt-image-2_create_a_cartoon_style_bin_thats_like_a_recycling_bin_but_instead_of_the_recycli-0-removebg-preview.png" class="bin-img" alt="Frutex Basket">
+        <span class="bin-label">Frutex Basket</span>
+        <span class="bin-count" id="bin-fresh-count">0</span>
+      </div>
+      <div class="sort-bin sort-bin-waste" id="bin-waste" ondragover="allowDrop(event)" ondrop="dropSort(event,'waste')">
+        <img src="lucid-origin_create_a_vibrant_cartoon_style_green_recycling_bin_with_a_wide_mouth_and_a_sligh-0-removebg-preview.png" class="bin-img" alt="Waste Bin">
+        <span class="bin-label">Waste Bin</span>
+        <span class="bin-count" id="bin-waste-count">0</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=2"></script>
 </body>
 </html>

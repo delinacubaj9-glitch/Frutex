@@ -133,26 +133,7 @@ const FRUTEX_FACTS = [
 ];
 
 /** Customers with specific juice orders */
-const CUSTOMERS = [
-  { id: 'kid',    emoji: '👧', name: 'Lily',  quote: 'Can you make me a delicious berry juice? I love strawberries!',
-    order: { type: 'category', cat: 'berry' }, bonusText: 'Uses berry fruits' },
-  { id: 'athlete',emoji: '🏃', name: 'Coach Max', quote: 'I need something tropical and energizing for after my run!',
-    order: { type: 'category', cat: 'tropical' }, bonusText: 'Uses tropical fruits' },
-  { id: 'critic', emoji: '👨‍🍳', name: 'Chef Antoine', quote: 'I want an apple and orange blend — classic and balanced.',
-    order: { type: 'specific', fruits: ['apple','orange'] }, bonusText: 'Includes apple & orange' },
-  { id: 'grandma',emoji: '👵', name: 'Grandma Rose', quote: 'Make me the sweetest juice you can, dear — extra sweet!',
-    order: { type: 'flavor', minSweet: 7 }, bonusText: 'Sweetness 7+' },
-  { id: 'artist', emoji: '🎨', name: 'Artist Mia', quote: 'Surprise me! Use at least 3 different fruits in your blend.',
-    order: { type: 'count', minFruits: 3 }, bonusText: '3+ different fruits' },
-  { id: 'boss',   emoji: '👔', name: 'Mr. Sterling', quote: 'I expect a citrus-forward drink. Make it sharp and refined.',
-    order: { type: 'category', cat: 'citrus' }, bonusText: 'Uses citrus fruits' },
-  { id: 'surfer', emoji: '🏄', name: 'Surfer Kai', quote: 'Tropical vibes only dude! Mango MUST be in there! 🤙',
-    order: { type: 'specific', fruits: ['mango'] }, bonusText: 'Includes mango' },
-  { id: 'yogi',   emoji: '🧘', name: 'Yogi Priya', quote: 'Something pure and fresh — use only green or citrus fruits.',
-    order: { type: 'categories', cats: ['tropical','citrus'] }, bonusText: 'Uses tropical or citrus' },
-];
-
-/** Animated customer reactions by star rating */
+/** Animated customer reactions by star rating (kept for compat) */
 const REACTIONS = {
   5: { emoji: '😍', phrases: ['PERFECT! This is exactly what I wanted!','Absolutely divine! You\'re a juice genius!','WOW! The best drink I\'ve ever had!'] },
   4: { emoji: '😊', phrases: ['Delicious! You really know your fruits!','Mmm, so good! Almost perfect!','I love this — great job!'] },
@@ -179,6 +160,7 @@ const NPC_CUSTOMERS = [
     quote:'Quick and crisp — citrus only. I\'m in a hurry!',
     order: { type:'category', cat:'citrus' }, tip: 12 },
   { id:'giovanni', emoji:'👨‍🦳', name:'Giovanni', personality:'Retired chef with refined taste',
+    img: 'lucid-origin_create_a_cartoon_style_character_fullbody_standing_pose_with_haazel_eyes_and_sho-0-removebg-preview.png',
     quote:'I know good juice. Blend strawberry with something unexpected.',
     order: { type:'specific', fruits:['strawberry'] }, tip: 20 },
 ];
@@ -303,8 +285,8 @@ const LEVEL_GOALS = [
   null, // index 0 unused
   { level: 1, desc: 'Create 2 great drinks', target: 2, type: 'good_drinks', minStars: 4 },
   { level: 2, desc: 'Serve Marco 3 tasty blends', target: 3, type: 'customer_orders', customer: { name: 'Marco', emoji: '🧔', quote: 'Surprise me with something fresh and fruity!' } },
-  { level: 3, desc: 'Earn 4 perfect ratings', target: 4, type: 'perfect_ratings', minStars: 5 },
-  { level: 4, desc: 'Create 3 mixed drinks with 3+ fruits each', target: 3, type: 'complex_drinks', minFruits: 3 },
+  { level: 3, desc: 'Serve all 3 customers', target: 3, type: 'customers_served' },
+  { level: 4, desc: 'Make the customers happy!', target: 3, type: 'happy_customers', minStars: 3 },
 ];
 
 // ============================================================
@@ -323,6 +305,7 @@ let state = {
   // Customer queue system
   customerQueue: [],        // queued NPC customers for current level
   currentCustomerIdx: 0,    // which customer is being served
+  lastQueueLevel: 0,        // track which level the queue was generated for
 
   // Unlocks (arrays of IDs)
   unlockedFruits: ['apple', 'orange', 'strawberry', 'peach', 'grape', 'pineapple', 'mango', 'banana'],
@@ -474,12 +457,13 @@ function showScreen(name) {
   // Refresh necessary panels
   if (name === 'menu') refreshMenu();
   if (name === 'game') {
-    // Generate customer queue for level 2+
-    if (state.level >= 2 && state.customerQueue.length === 0) {
+    // Generate queue if empty or level changed
+    if (state.customerQueue.length === 0 || state.lastQueueLevel !== state.level) {
+      state.lastQueueLevel = state.level;
       generateCustomerQueue();
     }
-    // Show NPC intro if queue is active with customers to serve
-    if (state.level >= 2 && state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length) {
+    // Show NPC intro if level >= 2 and there are customers
+    if (state.level >= 2 && state.customerQueue.length > 0) {
       showNpcIntro();
     }
     renderGameScreen();
@@ -1075,8 +1059,19 @@ function startBlend() {
     };
 
     sfxSuccess();
-    toast('Juice created! Match the Frutex drinks for bonus coins.');
-    startMinigame();
+    if (state.level === 1) {
+      toast('Juice created! Match the Frutex drinks for bonus coins.');
+      startMinigame();
+    } else if (state.level === 2) {
+      toast('Juice created! Can you identify the customer\'s order?');
+      startDetective();
+    } else if (state.level === 3) {
+      toast('Juice created! Can you identify the mystery drink by taste?');
+      startBlindTaste();
+    } else {
+      toast('Juice created! Sort fresh fruits for the best quality!');
+      startFruitSort();
+    }
   }, 1500);
 }
 
@@ -1245,14 +1240,361 @@ function finishMinigame() {
   clearInterval(memoryInterval);
   document.querySelectorAll('.confetti').forEach(function(c) { c.remove(); });
   saveState();
-  showScreen('present');
+  presentToCustomer();
 }
 
 function skipMinigame() {
   clearInterval(memoryInterval);
   document.querySelectorAll('.confetti').forEach(function(c) { c.remove(); });
   toast('Minigame skipped.');
-  showScreen('present');
+  presentToCustomer();
+}
+
+// ============================================================
+// MINIGAME — Fruit Detective
+// ============================================================
+
+/** Customer descriptions that match Frutex drinks */
+const DETECTIVE_CLUES = [
+  { text: 'I want something sweet and refreshing — classic and crisp!',        answer: 'apple',      hints:['sweet','refreshing','crisp'] },
+  { text: 'Give me something tropical and juicy, full of sunshine!',            answer: 'orange',     hints:['tropical','juicy','sunshine'] },
+  { text: 'I\'m craving a bold berry flavor — sweet and a little tangy!',       answer: 'strawberry', hints:['berry','sweet','tangy'] },
+  { text: 'Something smooth and mellow — a soft, sweet fruit please!',          answer: 'peach',      hints:['smooth','mellow','soft'] },
+  { text: 'I need a rich, deep purple drink — bold and intense!',               answer: 'grape',      hints:['purple','bold','intense'] },
+  { text: 'A vibrant blue-red antioxidant boost — healthy and delicious!',      answer: 'blueberry',  hints:['blue-red','antioxidant','healthy'] },
+  { text: 'Something dark and tart with a cherry kick!',                        answer: 'sourcherry', hints:['dark','tart','cherry'] },
+  { text: 'A crisp, clean apple taste — nothing beats the original!',            answer: 'apple',      hints:['crisp','clean','original'] },
+];
+
+var detectiveScore = 0;
+var detectiveTimer = null;
+var detectiveTimeLeft = 0;
+var detectiveClueIdx = -1;
+
+function startDetective() {
+  detectiveScore = 0;
+  detectiveTimeLeft = 20;
+  detectiveClueIdx = -1;
+  showScreen('detective');
+  updateDetectiveHUD();
+  nextDetectiveClue();
+  detectiveTimer = setInterval(function() {
+    detectiveTimeLeft--;
+    updateDetectiveHUD();
+    if (detectiveTimeLeft <= 0) {
+      clearInterval(detectiveTimer);
+      finishDetective();
+    }
+  }, 1000);
+}
+
+function updateDetectiveHUD() {
+  document.getElementById('detective-score').textContent = detectiveScore;
+  document.getElementById('detective-time').textContent = detectiveTimeLeft + 's';
+  var bar = document.getElementById('detective-timer-bar');
+  if (bar) bar.style.width = (detectiveTimeLeft / 20 * 100) + '%';
+}
+
+function nextDetectiveClue() {
+  var pool = DETECTIVE_CLUES.slice();
+  // Don't repeat last clue
+  var available = pool.filter(function(_, i) { return i !== detectiveClueIdx; });
+  detectiveClueIdx = pool.indexOf(available[Math.floor(Math.random() * available.length)]);
+
+  var clue = DETECTIVE_CLUES[detectiveClueIdx];
+  document.getElementById('clue-text').textContent = '"' + clue.text + '"';
+
+  // Render 4 drink options (one correct, 3 random distractors)
+  var options = [clue.answer];
+  var distractors = MEMORY_DRINKS.filter(function(d) { return d.id !== clue.answer; });
+  distractors = distractors.sort(function() { return Math.random() - 0.5; }).slice(0, 3);
+  var allOptions = options.concat(distractors.map(function(d) { return d.id; })).sort(function() { return Math.random() - 0.5; });
+
+  var container = document.getElementById('detective-options');
+  var html = '';
+  allOptions.forEach(function(id) {
+    var drink = MEMORY_DRINKS.find(function(d) { return d.id === id; });
+    if (!drink) return;
+    html += '<div class="detective-card" onclick="detectiveGuess(\'' + id + '\')">' +
+      '<img src="' + drink.img + '" class="detective-card-img" alt="' + drink.name + '">' +
+      '<span class="detective-card-name">' + drink.name + '</span>' +
+    '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function detectiveGuess(guessId) {
+  var clue = DETECTIVE_CLUES[detectiveClueIdx];
+  var correct = clue.answer === guessId;
+
+  // Flash card
+  var cards = document.querySelectorAll('.detective-card');
+  cards.forEach(function(c) {
+    var img = c.querySelector('img');
+    var id = MEMORY_DRINKS.find(function(d) { return d.img === img.getAttribute('src'); });
+    if (id && id.id === clue.answer) c.classList.add('detective-correct');
+  });
+
+  if (correct) {
+    detectiveScore += 10;
+    detectiveTimeLeft = Math.min(20, detectiveTimeLeft + 2); // bonus time
+    sfxSuccess();
+    spawnSparkles(document.getElementById('detective-clue'));
+    toast('+10 Correct!');
+  } else {
+    detectiveTimeLeft = Math.max(0, detectiveTimeLeft - 3); // penalty
+    sfxClick();
+    toast('Wrong! The answer is ' + (MEMORY_DRINKS.find(function(d){return d.id===clue.answer;})||{}).name || clue.answer);
+  }
+
+  updateDetectiveHUD();
+  setTimeout(nextDetectiveClue, 1200);
+}
+
+function finishDetective() {
+  clearInterval(detectiveTimer);
+  var bonus = detectiveScore * 2;
+  animateCoins(state.coins + bonus);
+  state.coins += bonus;
+  saveState();
+
+  // Show detective result on a simple screen with continue button
+  var screen = document.getElementById('detective-screen');
+  var html = '<div style="text-align:center;animation:screenIn 0.4s ease">' +
+    '<h2>🔍 Detective Complete!</h2>' +
+    '<p style="font-size:1.2rem;margin:1rem 0">Score: <b>' + detectiveScore + '</b></p>' +
+    '<p style="color:var(--accent-gold)">+<b>' + bonus + '</b> coins earned!</p>' +
+    '<button class="btn-big btn-primary" onclick="presentToCustomer()" style="margin-top:1.5rem">Continue →</button>' +
+    '</div>';
+  document.querySelector('.detective-container').innerHTML = html;
+}
+
+// ============================================================
+// MINIGAME — Blind Taste Challenge (Level 3)
+// ============================================================
+
+const BLIND_TASTE_CLUES = [
+  { clues: ['Very fruity','Rich aroma','Vibrant red'],               answer: 'strawberry' },
+  { clues: ['Crisp bite','Light and clean','Classic orchard'],        answer: 'apple' },
+  { clues: ['Zesty tang','Sun-ripened','Citrus burst'],               answer: 'orange' },
+  { clues: ['Velvety smooth','Mellow sweetness','Golden hue'],         answer: 'peach' },
+  { clues: ['Deep purple','Bold grape punch','Intense richness'],     answer: 'grape' },
+  { clues: ['Berry tart','Antioxidant kick','Blue-violet notes'],      answer: 'blueberry' },
+  { clues: ['Sharp cherry','Tangy deep red','Bold tart finish'],      answer: 'sourcherry' },
+  { clues: ['Earthy sweetness','Vibrant orange','Root-to-glass'],      answer: 'carrot' },
+];
+
+var blindScore = 0, blindTimer = null, blindTimeLeft = 0, blindIdx = -1;
+
+function startBlindTaste() {
+  blindScore = 0; blindTimeLeft = 20; blindIdx = -1;
+  showScreen('blind');
+
+  // Show Frutex worker NPC (separate from customer Giovanni)
+  var workerImg = 'gpt-image-2_create_a_full_body_standing_pose_cartoon_style_character_._wearing_a_green_hat_t-0-removebg-preview.png';
+  document.getElementById('blind-npc-img').src = workerImg;
+  document.getElementById('blind-npc-name').textContent = 'Frutex Taster';
+  document.getElementById('blind-npc-sub').textContent = 'Tasting your drink...';
+
+  updateBlindHUD();
+  nextBlindClue();
+  blindTimer = setInterval(function() {
+    blindTimeLeft--;
+    updateBlindHUD();
+    if (blindTimeLeft <= 0) { clearInterval(blindTimer); finishBlind(); }
+  }, 1000);
+}
+
+function updateBlindHUD() {
+  document.getElementById('blind-score').textContent = blindScore;
+  document.getElementById('blind-time').textContent = blindTimeLeft + 's';
+  var fill = document.getElementById('blind-timer-fill');
+  if (fill) fill.style.width = (blindTimeLeft / 20 * 100) + '%';
+  if (blindTimeLeft <= 5) fill.style.background = '#e74c3c';
+  else fill.style.background = 'var(--accent-primary)';
+}
+
+function nextBlindClue() {
+  var pool = BLIND_TASTE_CLUES.slice();
+  var avail = pool.filter(function(_,i){return i!==blindIdx;});
+  blindIdx = pool.indexOf(avail[Math.floor(Math.random()*avail.length)]);
+  var clue = BLIND_TASTE_CLUES[blindIdx];
+
+  // Show 3 taste clues
+  var html = '';
+  for (var i=0;i<clue.clues.length;i++) {
+    html += '<p style="animation:screenIn 0.3s ease ' + (i*0.15) + 's both;font-size:0.9rem;margin:0.2rem 0">🗣️ "' + clue.clues[i] + '"</p>';
+  }
+  document.getElementById('blind-clue-text').innerHTML = html;
+
+  // Render 3 options (one correct, two distractors)
+  var dists = MEMORY_DRINKS.filter(function(d){return d.id!==clue.answer;}).sort(function(){return Math.random()-0.5;}).slice(0,2);
+  var all = [clue.answer].concat(dists.map(function(d){return d.id;})).sort(function(){return Math.random()-0.5;});
+
+  var cont = document.getElementById('blind-options');
+  var h = '';
+  all.forEach(function(id){
+    var d = MEMORY_DRINKS.find(function(x){return x.id===id;});
+    if(!d)return;
+    h+='<div class="blind-card" onclick="blindGuess(\''+id+'\')"><img src="'+d.img+'" class="blind-card-img" alt="'+d.name+'"><span>'+d.name+'</span></div>';
+  });
+  cont.innerHTML = h;
+}
+
+function blindGuess(id) {
+  var c=BLIND_TASTE_CLUES[blindIdx], correct=c.answer===id;
+  document.querySelectorAll('.blind-card').forEach(function(card){
+    var img=card.querySelector('img');
+    var found=MEMORY_DRINKS.find(function(d){return d.img===img.getAttribute('src');});
+    if(found&&found.id===c.answer)card.style.borderColor='var(--accent-gold)';
+    else if(found&&found.id===id&&!correct)card.style.borderColor='#e74c3c';
+  });
+  if(correct){
+    blindScore+=10;blindTimeLeft=Math.min(20,blindTimeLeft+3);sfxSuccess();spawnSparkles(document.getElementById('blind-clue-box'));
+    document.getElementById('blind-npc-sub').textContent = 'Excellent!';
+    toast('+10 Correct!');
+  }else{
+    blindTimeLeft=Math.max(0,blindTimeLeft-3);sfxClick();
+    document.getElementById('blind-npc-sub').textContent = 'Not quite...';
+    toast('Wrong! It was '+(MEMORY_DRINKS.find(function(d){return d.id===c.answer;})||{}).name||c.answer);
+  }
+  updateBlindHUD();
+  setTimeout(function(){ document.getElementById('blind-npc-sub').textContent = 'Tasting...'; nextBlindClue(); }, 1500);
+}
+
+function finishBlind() {
+  clearInterval(blindTimer);
+  var bonus=blindScore*2;
+  animateCoins(state.coins+bonus);state.coins+=bonus;saveState();
+  document.querySelector('.blind-layout').innerHTML='<div style="text-align:center;padding:2rem;animation:screenIn 0.4s ease"><h2>👅 Taste Complete!</h2><p style="font-size:1.2rem;margin:1rem 0">Score: <b>'+blindScore+'</b></p><p style="color:var(--accent-gold)">+<b>'+bonus+'</b> coins earned!</p><button class="btn-big btn-primary" onclick="presentToCustomer()" style="margin-top:1.5rem">Continue →</button></div>';
+}
+
+// ============================================================
+// MINIGAME — Fruit Freshness Sort (Level 4)
+// ============================================================
+
+const SORT_FRUITS = [
+  { img: 'Natural-Strawberry-200ml.webp', name: 'Strawberry', fresh: true },
+  { img: 'Natural-Apple-750ml.webp', name: 'Apple', fresh: true },
+  { img: 'Natural-Orange-200ml.webp', name: 'Orange', fresh: true },
+  { img: 'Natural-Peach-200ml.webp', name: 'Peach', fresh: true },
+  { img: 'Natural-Grape-250ml.webp', name: 'Grape', fresh: true },
+  { img: 'Natural-Blueberry-200ml.webp', name: 'Blueberry', fresh: true },
+  { img: 'Natural-Carrot-200ml.webp', name: 'Carrot', fresh: true },
+  { img: 'Natural-Sourcherry-200ml.webp', name: 'Sourcherry', fresh: true },
+];
+
+var sortScore = 0, sortTimer = null, sortTimeLeft = 0, sortCombo = 0, sortFreshCount = 0, sortWasteCount = 0;
+
+function startFruitSort() {
+  sortScore = 0; sortTimeLeft = 30; sortCombo = 0; sortFreshCount = 0; sortWasteCount = 0;
+  showScreen('sort');
+  updateSortHUD();
+  spawnSortFruit();
+  sortTimer = setInterval(function() {
+    sortTimeLeft--;
+    updateSortHUD();
+    if (sortTimeLeft <= 0) { clearInterval(sortTimer); finishSort(); }
+  }, 1000);
+}
+
+function updateSortHUD() {
+  document.getElementById('sort-score').textContent = sortScore;
+  document.getElementById('sort-time').textContent = sortTimeLeft + 's';
+  document.getElementById('bin-fresh-count').textContent = sortFreshCount;
+  document.getElementById('bin-waste-count').textContent = sortWasteCount;
+  var fill = document.getElementById('sort-timer-fill');
+  if (fill) fill.style.width = (sortTimeLeft / 30 * 100) + '%';
+}
+
+function spawnSortFruit() {
+  var conveyor = document.getElementById('sort-conveyor');
+  var pool = SORT_FRUITS.slice().sort(function(){return Math.random()-0.5;});
+
+  // Spawn just 1 fruit at a time, slower pace
+  for (var i = 0; i < 1; i++) {
+    var fruit = pool[i % pool.length];
+    var isFresh = Math.random() > 0.35; // 65% chance fresh
+    var el = document.createElement('div');
+    el.className = 'sort-fruit';
+    el.draggable = true;
+    el.dataset.fresh = isFresh ? '1' : '0';
+    el.dataset.name = fruit.name;
+    el.style.animationDelay = (i * 0.3) + 's';
+
+    var img = document.createElement('img');
+    img.src = fruit.img;
+    img.draggable = false;
+    if (!isFresh) img.style.filter = 'grayscale(0.7) sepia(0.5) hue-rotate(-30deg) brightness(0.7)';
+    el.appendChild(img);
+
+    var label = document.createElement('span');
+    label.textContent = fruit.name;
+    label.style.cssText = 'font-size:0.6rem;font-weight:700;margin-top:2px';
+    if (!isFresh) label.textContent += ' ⚠️';
+    el.appendChild(label);
+
+    el.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('text/plain', e.target.closest('.sort-fruit').dataset.fresh);
+      e.target.closest('.sort-fruit').classList.add('dragging');
+    });
+    el.addEventListener('dragend', function(e) {
+      e.target.closest('.sort-fruit').classList.remove('dragging');
+    });
+
+    conveyor.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 5000);
+  }
+
+  // Next wave
+  if (sortTimeLeft > 0) setTimeout(spawnSortFruit, 2000);
+}
+
+function dropSort(e, bin) {
+  e.preventDefault();
+  var isFresh = e.dataTransfer.getData('text/plain') === '1';
+  var correct = (bin === 'fresh' && isFresh) || (bin === 'waste' && !isFresh);
+
+  var binEl = document.getElementById('bin-' + bin);
+  binEl.classList.add('bin-flash');
+  setTimeout(function(){ binEl.classList.remove('bin-flash'); }, 300);
+
+  // Remove the dragged fruit element immediately
+  var draggingEl = document.querySelector('.sort-fruit.dragging');
+  if (draggingEl) draggingEl.remove();
+
+  if (correct) {
+    sortCombo++;
+    var bonus = sortCombo >= 5 ? 10 : 5;
+    sortScore += 5 + bonus;
+    if (bin === 'fresh') sortFreshCount++; else sortWasteCount++;
+    sfxSuccess();
+    spawnSparkles(binEl);
+    if (sortCombo >= 3) document.getElementById('sort-combo').style.display = '';
+    document.getElementById('sort-combo').textContent = sortCombo + 'x COMBO!';
+  } else {
+    sortCombo = 0;
+    sortScore = Math.max(0, sortScore - 3);
+    document.getElementById('sort-combo').style.display = 'none';
+    sfxClick();
+  }
+  updateSortHUD();
+}
+
+function finishSort() {
+  clearInterval(sortTimer);
+  var quality = sortFreshCount > 0 ? Math.min(100, Math.round(sortScore / (sortFreshCount + sortWasteCount + 1) * 20)) : 50;
+  var bonus = sortScore * 3;
+  animateCoins(state.coins + bonus); state.coins += bonus; saveState();
+  if (state.currentJuice) state.currentJuice.freshness = Math.round(quality / 10);
+  document.querySelector('#sort-screen').innerHTML =
+    '<div style="text-align:center;padding:2rem;animation:screenIn 0.4s ease">' +
+    '<h2>🧺 Sorting Complete!</h2>' +
+    '<p style="font-size:1.2rem;margin:1rem 0">Quality Score: <b>' + quality + '%</b></p>' +
+    '<p style="font-size:0.85rem">Fresh: ' + sortFreshCount + ' | Waste: ' + sortWasteCount + '</p>' +
+    '<p style="color:var(--accent-gold)">+<b>' + bonus + '</b> coins earned!</p>' +
+    '<button class="btn-big btn-primary" onclick="presentToCustomer()" style="margin-top:1.5rem">Continue →</button>' +
+    '</div>';
 }
 
 // ============================================================
@@ -1498,20 +1840,20 @@ function updateDesignPreview() {
 // ============================================================
 
 var currentCustomer = null;
-var npcRecipe = null;  // Marco's requested recipe for level 2
 
 /** Generate customer queue based on level */
 function generateCustomerQueue() {
   var marco  = NPC_CUSTOMERS.find(function(c) { return c.id === 'marco'; });
   var sophia = NPC_CUSTOMERS.find(function(c) { return c.id === 'sophia'; });
   var elena  = NPC_CUSTOMERS.find(function(c) { return c.id === 'elena'; });
+  var giovanni = NPC_CUSTOMERS.find(function(c) { return c.id === 'giovanni'; });
 
   if (state.level === 2) {
     state.customerQueue = [marco];
   } else if (state.level === 3) {
-    state.customerQueue = [sophia, marco];
+    state.customerQueue = [sophia, giovanni, elena];
   } else if (state.level === 4) {
-    state.customerQueue = [elena, sophia, marco];
+    state.customerQueue = [marco, elena, giovanni, sophia];
   } else {
     var shuffled = NPC_CUSTOMERS.slice().sort(function() { return Math.random() - 0.5; });
     var count = 5;
@@ -1620,16 +1962,20 @@ function presentToCustomer() {
       name: qc.name, emoji: qc.emoji, quote: qc.quote,
       isNPC: true, order: qc.order, tip: qc.tip,
     };
-    npcRecipe = null;
 
-    // NPC: skip presentation screen, rate immediately then show reaction
+    // NPC: show cup + rating immediately
+    showScreen('present');
     getRating();
     return;
   }
 
-  // Non-NPC flow: random customer
-  currentCustomer = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
-  npcRecipe = null;
+  // Fallback: use first queue customer or a generic one
+  if (state.customerQueue.length > 0) {
+    var qc = state.customerQueue[state.currentCustomerIdx || 0];
+    currentCustomer = { name: qc.name, emoji: qc.emoji, quote: qc.quote, isNPC: true, order: qc.order, tip: qc.tip };
+  } else {
+    currentCustomer = { name: 'Guest', emoji: '🧃', quote: 'Surprise me!', isNPC: false };
+  }
 
   // Render customer
   var area = document.getElementById('customer-area');
@@ -1641,13 +1987,14 @@ function presentToCustomer() {
   // Show order
   var orderEl = document.getElementById('customer-order');
   orderEl.style.display = '';
-  if (npcRecipe) {
-    orderEl.innerHTML = '📋 <b>Marco wants:</b> ' + npcRecipe.map(function(id) {
-      var f = ALL_FRUITS.find(function(fr) { return fr.id === id; });
-      return f ? fruitIcon(f) + ' ' + f.name : id;
-    }).join(' + ');
-  } else if (currentCustomer.bonusText) {
-    orderEl.innerHTML = '📋 <b>Order:</b> ' + currentCustomer.bonusText + ' — earn bonus coins!';
+  if (currentCustomer.order) {
+    var orderText = '';
+    var o = currentCustomer.order;
+    if (o.type === 'category') orderText = 'Wants ' + o.cat + ' fruits';
+    else if (o.type === 'specific') orderText = 'Must include ' + o.fruits.join(' & ');
+    else if (o.type === 'count') orderText = 'Wants ' + o.minFruits + '+ fruits';
+    else if (o.type === 'flavor') orderText = 'Sweetness level ' + o.minSweet + '+';
+    orderEl.innerHTML = '📋 <b>' + currentCustomer.name + ' wants:</b> ' + orderText;
   } else {
     orderEl.innerHTML = '📋 <b>Make something tasty!</b>';
   }
@@ -1690,6 +2037,45 @@ function checkOrderFulfilled(customer, juice) {
   return false;
 }
 
+/** Generate a nutrition-style card for the created juice */
+function generateNutritionPanel(juice) {
+  var fruitNames = juice.fruits.map(function(id) {
+    var f = ALL_FRUITS.find(function(fr) { return fr.id === id; });
+    return f ? f.name : id;
+  });
+  var vitamins = [];
+  if (juice.fruits.some(function(f){return ['orange','lemon','strawberry','kiwi'].indexOf(f)!==-1;})) vitamins.push('Vitamin C');
+  if (juice.fruits.some(function(f){return ['mango','peach','papaya'].indexOf(f)!==-1;})) vitamins.push('Vitamin A');
+  if (juice.fruits.some(function(f){return ['banana','coconut'].indexOf(f)!==-1;})) vitamins.push('Potassium');
+  if (juice.fruits.some(function(f){return ['grape','blueberry','raspberry','pomegranate'].indexOf(f)!==-1;})) vitamins.push('Antioxidants');
+  if (vitamins.length === 0) vitamins.push('Vitamins B & E');
+
+  return '<div class="nutrition-panel">' +
+    '<div class="nutrition-header">🥤 Nutrition Info</div>' +
+    '<div class="nutrition-grid">' +
+      '<div class="nutrition-item"><span class="nut-label">Fruits</span><span class="nut-val">' + fruitNames.join(', ') + '</span></div>' +
+      '<div class="nutrition-item"><span class="nut-label">Key Vitamins</span><span class="nut-val">' + vitamins.join(' · ') + '</span></div>' +
+      '<div class="nutrition-item"><span class="nut-label">Sweetness</span><span class="nut-val">' + Math.round(juice.sweetness) + '/10</span></div>' +
+      '<div class="nutrition-item"><span class="nut-label">Freshness</span><span class="nut-val">' + Math.round(juice.freshness) + '/10</span></div>' +
+    '</div>' +
+    '<div class="nutrition-tags">' +
+      '<span class="nut-tag">100% Fruit</span>' +
+      '<span class="nut-tag">Natural Ingredients</span>' +
+      '<span class="nut-tag">No Added Sugar</span>' +
+    '</div>' +
+  '</div>';
+}
+
+/** Get a random Frutex fact */
+function getRandomFact() {
+  var pool = FRUTEX_FACTS.slice();
+  var available = pool.filter(function(f) { return factsUsed.indexOf(f.fact) === -1; });
+  if (available.length === 0) { factsUsed = []; available = pool; }
+  var fact = available[Math.floor(Math.random() * available.length)];
+  factsUsed.push(fact.fact);
+  return '<div class="fact-card"><span class="fact-icon">' + fact.icon + '</span><div class="fact-text">' + fact.fact + '</div></div>';
+}
+
 function getRating() {
   if (!currentCustomer || !state.currentJuice) return;
 
@@ -1721,14 +2107,7 @@ function getRating() {
   appearanceScore = Math.min(100, appearanceScore);
 
   // Order bonus
-  var npcBonus = 0;
-  if (npcRecipe && customer.isNPC) {
-    // How many of Marco's requested fruits did we include?
-    var hits = npcRecipe.filter(function(r) { return juice.fruits.indexOf(r) !== -1; }).length;
-    var matchPct = hits / npcRecipe.length;
-    npcBonus = Math.round(matchPct * 25);
-    tasteScore = Math.min(100, tasteScore + npcBonus);
-  } else if (orderFulfilled) {
+  if (orderFulfilled) {
     tasteScore = Math.min(100, tasteScore + 15);
   }
 
@@ -1746,33 +2125,34 @@ function getRating() {
   var xpEarned = stars * 15 + Math.floor(overallScore * 0.2);
   if (orderFulfilled) { coinsEarned += 30; xpEarned += 10; }
 
-  // --- Animated Reaction ---
-  var reaction = REACTIONS[stars];
-  var phrase = reaction.phrases[Math.floor(Math.random() * reaction.phrases.length)];
-  var reactEl = document.getElementById('reaction-display');
-  reactEl.innerHTML =
-    '<div class="reaction-emoji">' + reaction.emoji + '</div>' +
-    '<div class="reaction-comment">' + phrase + '</div>';
-  reactEl.style.display = 'flex';
-
-  // --- Rating Breakdown ---
+  // --- Simplified end screen: just nutrition + fact ---
   var ratingEl = document.getElementById('rating-display');
-  var starStr = '';
-  for (var i = 0; i < 5; i++) starStr += i < stars ? '⭐' : '☆';
-
   ratingEl.innerHTML =
-    '<div class="rating-stars">' + starStr + '</div>' +
-    (orderFulfilled ? '<div style="color:var(--accent-gold);font-weight:700;font-size:0.85rem">✅ Order fulfilled! +30 bonus coins!</div>' : '') +
-    '<div class="rating-breakdown">' +
-      '<div class="rating-row"><span>🍯 Taste</span><div class="rating-row-bar"><div class="rating-row-bar-fill" style="width:' + tasteScore + '%"></div></div><span>' + Math.round(tasteScore) + '%</span></div>' +
-      '<div class="rating-row"><span>🎨 Creativity</span><div class="rating-row-bar"><div class="rating-row-bar-fill" style="width:' + creativityScore + '%"></div></div><span>' + Math.round(creativityScore) + '%</span></div>' +
-      '<div class="rating-row"><span>✨ Appearance</span><div class="rating-row-bar"><div class="rating-row-bar-fill" style="width:' + appearanceScore + '%"></div></div><span>' + Math.round(appearanceScore) + '%</span></div>' +
-    '</div>' +
+    generateNutritionPanel(juice) +
+    getRandomFact() +
     '<div class="rewards-display"><span>🪙 +' + coinsEarned + '</span><span>✨ +' + xpEarned + ' XP</span></div>';
 
   ratingEl.style.display = 'flex';
   document.getElementById('present-btn').style.display = 'none';
-  document.getElementById('continue-btn').style.display = '';
+
+  // 15-second reading delay for nutrition panel
+  var continueBtn = document.getElementById('continue-btn');
+  var readTime = 15;
+  continueBtn.style.display = '';
+  continueBtn.disabled = true;
+  continueBtn.textContent = 'Please wait (' + readTime + 's)...';
+  var countdown = setInterval(function() {
+    readTime--;
+    if (readTime <= 0) {
+      clearInterval(countdown);
+      continueBtn.disabled = false;
+      var nextLabel = (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length - 1) ? 'Next Customer →' : 'Continue →';
+      continueBtn.textContent = nextLabel;
+      continueBtn.style.animation = 'pulse 0.5s ease';
+    } else {
+      continueBtn.textContent = 'Continue in ' + readTime + 's...';
+    }
+  }, 1000);
 
   // Apply rewards
   animateCoins(state.coins + coinsEarned);
@@ -1802,7 +2182,6 @@ function getRating() {
 }
 
 function finishRound() {
-  // Clean up
   document.querySelectorAll('.confetti').forEach(function(c) { c.remove(); });
 
   state.blenderFruits = [];
@@ -1811,6 +2190,12 @@ function finishRound() {
   currentCustomer = null;
 
   saveState();
+
+  // If more customers in queue, go to next customer
+  if (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length - 1) {
+    nextCustomer();
+    return;
+  }
 
   // Show Frutex fact occasionally (50% chance)
   if (Math.random() < 0.5) {

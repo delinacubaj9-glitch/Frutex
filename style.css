@@ -2363,4 +2363,253 @@ body::before {
   border-radius: 0 0 8px 8px;
   margin-top: -1px;
 }
+
+/* ===== NUTRITION PANEL & FACT CARD ===== */
+.nutrition-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem; margin-top: 0.6rem;
+  animation: fadeSlideIn 0.5s ease 0.3s both;
 }
+.nutrition-header {
+  font-weight: 700; font-size: 0.85rem;
+  color: var(--accent-primary); margin-bottom: 0.5rem;
+}
+.nutrition-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.nutrition-item { display: flex; flex-direction: column; gap: 0.1rem; }
+.nut-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.nut-val  { font-size: 0.75rem; font-weight: 600; color: var(--text); }
+.nutrition-tags {
+  display: flex; flex-wrap: wrap; gap: 0.3rem;
+  margin-top: 0.5rem; padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.nut-tag {
+  font-size: 0.6rem; font-weight: 700; padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  background: rgba(198,144,90,0.12);
+  color: var(--accent-primary);
+}
+
+.fact-card {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: linear-gradient(135deg, rgba(198,144,90,0.08), rgba(63,185,80,0.06));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem; margin-top: 0.5rem;
+  animation: fadeSlideIn 0.5s ease 0.5s both;
+}
+.fact-icon { font-size: 1.2rem; flex-shrink: 0; }
+.fact-text { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.3; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== FRUIT DETECTIVE ===== */
+  .detective-container {
+  max-width: 600px; width: 100%;
+  display: flex; flex-direction: column; gap: 1rem;
+  padding: 1.5rem;
+  }
+  .detective-header { text-align: center; }
+  .detective-header h2 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .detective-timer {
+  width: 100%; height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px; margin-bottom: 0.5rem;
+  overflow: hidden;
+  }
+  .timer-bar {
+  height: 100%; width: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), #e74c3c);
+  border-radius: 3px;
+  transition: width 1s linear;
+  }
+  .detective-stats {
+  display: flex; justify-content: center; gap: 2rem;
+  font-size: 0.85rem; color: var(--text-secondary);
+  }
+  .detective-stats b { color: var(--accent-gold); }
+  .detective-clue {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem; text-align: center;
+  animation: screenIn 0.4s ease;
+  }
+  .clue-text {
+  font-size: 1.1rem; font-style: italic;
+  color: var(--text); line-height: 1.5;
+  }
+  .detective-options {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  }
+  .detective-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.4rem; padding: 0.8rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer; transition: var(--transition);
+  animation: screenIn 0.4s ease both;
+  }
+  .detective-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  }
+  .detective-card-img {
+  width: 48px; height: 72px;
+  object-fit: contain;
+  border-radius: 4px;
+  }
+  .detective-card-name {
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--text); text-align: center;
+  }
+  .detective-correct {
+  border-color: var(--accent-gold) !important;
+  background: rgba(198,144,90,0.12) !important;
+  animation: pulse 0.4s ease;
+  }
+
+  @media (max-width: 500px) {
+  .detective-options { grid-template-columns: repeat(2, 1fr); }
+  }
+
+/* ===== BLIND TASTE CHALLENGE ===== */
+.blind-layout {
+  display: flex; align-items: flex-start; gap: 1.5rem;
+  max-width: 700px; width: 100%; padding: 1.5rem;
+}
+.blind-npc {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.3rem; min-width: 200px; max-width: 45%;
+}
+.blind-npc-img {
+  width: 100%; max-width: 280px; height: auto; max-height: 60vh;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.25));
+}
+.blind-npc-name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+.blind-npc-sub  { font-size: 0.7rem; color: var(--text-muted); }
+.blind-main { flex: 1; }
+.blind-timer-bar {
+  width: 100%; height: 6px; background: var(--bg-secondary);
+  border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem;
+}
+.blind-timer-fill {
+  height: 100%; width: 100%;
+  background: var(--accent-primary);
+  border-radius: 3px; transition: width 1s linear;
+}
+.blind-timer-text { text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.8rem; }
+.blind-timer-text b { color: var(--accent-gold); }
+.blind-clue-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1rem;
+  margin-bottom: 0.8rem; text-align: center;
+  animation: screenIn 0.4s ease;
+}
+.blind-options {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.blind-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.3rem; padding: 0.7rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  transition: var(--transition);
+  animation: screenIn 0.4s ease both;
+}
+.blind-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+.blind-card img { width: 44px; height: 66px; object-fit: contain; border-radius: 4px; }
+.blind-card span { font-size: 0.7rem; font-weight: 700; color: var(--text); }
+
+@media (max-width: 500px) {
+  .blind-layout { flex-direction: column; align-items: center; }
+  .blind-npc { max-width: 60%; min-width: auto; }
+  .blind-npc-img { max-width: 180px; }
+}
+
+/* ===== FRUIT FRESHNESS SORT ===== */
+.sort-header {
+  width: 100%; max-width: 700px; padding: 0 1rem;
+}
+.sort-timer-bar {
+  width: 100%; height: 6px; background: var(--bg-secondary);
+  border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem;
+}
+.sort-timer-fill {
+  height: 100%; width: 100%;
+  background: var(--accent-primary);
+  border-radius: 3px; transition: width 1s linear;
+}
+.sort-stats {
+  display: flex; justify-content: center; gap: 2rem;
+  font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.8rem;
+}
+.sort-stats b { color: var(--accent-gold); }
+.sort-conveyor {
+  width: 100%; max-width: 700px; min-height: 120px;
+  background: linear-gradient(180deg, var(--bg-secondary), var(--surface));
+  border: 2px solid var(--border); border-radius: var(--radius-lg);
+  padding: 0.8rem; display: flex; flex-wrap: wrap;
+  gap: 0.5rem; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  margin-bottom: 1rem;
+}
+.sort-conveyor::before {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 200%; height: 2px;
+  background: repeating-linear-gradient(90deg, var(--accent-primary) 0, var(--accent-primary) 8px, transparent 8px, transparent 16px);
+  animation: conveyorMove 0.8s linear infinite;
+  opacity: 0.3;
+}
+@keyframes conveyorMove { to { transform: translateX(16px); } }
+
+.sort-fruit {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.4rem; background: var(--surface);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  cursor: grab; transition: var(--transition);
+  animation: slideIn 0.4s ease both;
+  width: 70px;
+}
+.sort-fruit:hover { border-color: var(--accent-primary); transform: scale(1.08); }
+.sort-fruit.dragging { opacity: 0.5; transform: scale(0.9); }
+.sort-fruit img {
+  width: 44px; height: 60px; object-fit: contain;
+  border-radius: 4px; pointer-events: none;
+}
+@keyframes slideIn {
+  from { transform: translateX(-60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.sort-bins {
+  display: flex; gap: 2rem; justify-content: center;
+  max-width: 700px; width: 100%; padding: 0 1rem;
+}
+.sort-bin {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 0.3rem; padding: 1rem;
+  border: 2px dashed var(--border); border-radius: var(--radius-lg);
+  transition: var(--transition); min-height: 100px;
+}
+.sort-bin-fresh:hover { border-color: var(--accent-primary); background: rgba(198,144,90,0.06); }
+.sort-bin-waste:hover { border-color: #e74c3c; background: rgba(231,76,60,0.06); }
+.bin-flash { animation: binPop 0.3s ease; }
+@keyframes binPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+.bin-icon { font-size: 1.5rem; }
+.bin-img { width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.bin-label { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+.bin-count { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); }
