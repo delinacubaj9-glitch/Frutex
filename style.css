@@ -62,11 +62,12 @@ body {
   padding: 1rem;
 }
 
-/* Subtle grid pattern background */
+/* Subtle grid pattern background — Frutex green inspired */
 body::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse at 20% 50%, rgba(198,144,90,0.04) 0%, transparent 50%),
-              radial-gradient(ellipse at 80% 20%, rgba(63,185,80,0.03) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 20% 50%, rgba(0,112,66,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 30%, rgba(0,112,66,0.05) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 80%, rgba(198,144,90,0.04) 0%, transparent 50%);
 }
 
 /* Icon */
@@ -109,15 +110,32 @@ body::before {
 
 .screen.active { display: flex; }
 
-/* Game screen full background */
+.menu-action-row {
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.menu-fruit-img {
+  width: 90px; height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  animation: floatDrift 4s ease-in-out infinite;
+}
+/* Tropical fruit on menu screen — removed */
+
+/* Game screen — soft pink background */
 #game-screen.active {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; max-width: none; z-index: 0;
-  background: url('lucid-origin_create_a_vibrant_and_fruity_colorful_gradient_background_that_transitions_smooth-0.jpg') center/cover no-repeat;
+  background: linear-gradient(135deg, #fce4ec, #f8bbd0, #f48fb1);
   padding: 1rem; margin: 0;
   overflow-y: auto;
   display: flex; align-items: center; justify-content: center;
 }
 #game-screen.active > .game-layout { max-width: 1100px; width: 100%; }
+
+/* Minigame screen backgrounds — full screen pastel */
+#minigame-screen.active { position:fixed;inset:0;z-index:0;max-width:none;width:100vw;height:100vh;height:100dvh; background: #e8f5e9; display:flex;align-items:center;justify-content:center; }
+#detective-screen.active { position:fixed;inset:0;z-index:0;max-width:none;width:100vw;height:100vh;height:100dvh; background: #fff3e0; display:flex;align-items:center;justify-content:center; }
+#blind-screen.active { position:fixed;inset:0;z-index:0;max-width:none;width:100vw;height:100vh;height:100dvh; background: #e8eaf6; display:flex;align-items:center;justify-content:center; }
+#sort-screen.active { position:fixed;inset:0;z-index:0;max-width:none;width:100vw;height:100vh;height:100dvh; background: #e0f2f1; display:flex;align-items:center;justify-content:center; }
 
 @keyframes screenIn {
   from { opacity: 0; transform: translateY(20px); }
@@ -257,10 +275,18 @@ body::before {
 .btn-icon { margin-right: 0.5rem; }
 
 /* ===== MAIN MENU ===== */
+/* Menu background video */
+.menu-bg-video {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh; height: 100dvh;
+  object-fit: cover; z-index: 0;
+  pointer-events: none;
+}
 .menu-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative; z-index: 1;
   gap: 1.5rem;
   padding: 2rem;
   max-width: 480px;
@@ -367,6 +393,9 @@ body::before {
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  background: linear-gradient(135deg, #1a237e, #283593, #3949ab);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
 }
 
 .level-tab {

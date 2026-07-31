@@ -18,20 +18,22 @@ const ALL_FRUITS = [
   { id: 'grape',      emoji: '🍇', name: 'Grape',      cat: 'berry',    sweet: 7, tart: 4, fresh: 6, unlock: 1 },
   { id: 'pineapple',  emoji: '🍍', name: 'Pineapple',  cat: 'tropical', sweet: 7, tart: 6, fresh: 9, unlock: 1 },
   { id: 'mango',      emoji: '🥭', name: 'Mango',      cat: 'tropical', sweet: 9, tart: 2, fresh: 8, unlock: 1 },
-  { id: 'blueberry',  emoji: '🫐', svg: '<svg viewBox="0 0 32 32" width="28" height="28" style="display:inline-block;vertical-align:middle"><circle cx="16" cy="16" r="15" fill="#4a6fd4" stroke="#294090" stroke-width="2"/><circle cx="16" cy="16" r="11" fill="#6b90f0"/><ellipse cx="12" cy="11" rx="5" ry="3" fill="rgba(255,255,255,0.25)"/></svg>', name: 'Blueberry',  cat: 'berry',    sweet: 6, tart: 5, fresh: 6, unlock: 3 },
-  { id: 'cherry',     emoji: '🍒', name: 'Cherry',     cat: 'berry',    sweet: 8, tart: 4, fresh: 6, unlock: 4 },
-  { id: 'lemon',      emoji: '🍋', name: 'Lemon',      cat: 'citrus',   sweet: 2, tart: 8, fresh: 9, unlock: 3 },
-  { id: 'watermelon', emoji: '🍉', name: 'Watermelon', cat: 'basic',    sweet: 8, tart: 1, fresh: 10, unlock: 5 },
-  { id: 'kiwi',       emoji: '🥝', name: 'Kiwi',       cat: 'tropical', sweet: 5, tart: 6, fresh: 8, unlock: 4 },
-  { id: 'banana',     emoji: '🍌', name: 'Banana',     cat: 'basic',    sweet: 8, tart: 1, fresh: 4, unlock: 2 },
-  { id: 'lime',       emoji: '🍋', name: 'Lime',       cat: 'citrus',   sweet: 2, tart: 9, fresh: 10, unlock: 5 },
-  { id: 'dragonfruit',emoji: '🌸', name: 'Dragonfruit',cat: 'tropical', sweet: 6, tart: 3, fresh: 9, unlock: 6 },
-  { id: 'raspberry',  emoji: '🫐', name: 'Raspberry',  cat: 'berry',    sweet: 7, tart: 5, fresh: 7, unlock: 3 },
-  { id: 'coconut',    emoji: '🥥', name: 'Coconut',    cat: 'tropical', sweet: 5, tart: 1, fresh: 8, unlock: 4 },
-  { id: 'plum',       emoji: '🫐', name: 'Plum',       cat: 'berry',    sweet: 6, tart: 4, fresh: 5, unlock: 4 },
-  { id: 'pear',       emoji: '🍐', name: 'Pear',       cat: 'basic',    sweet: 7, tart: 1, fresh: 7, unlock: 3 },
-  { id: 'papaya',     emoji: '🫐', name: 'Papaya',     cat: 'tropical', sweet: 8, tart: 2, fresh: 8, unlock: 5 },
-  { id: 'pomegranate',emoji: '🫐', name: 'Pomegranate',cat: 'berry',    sweet: 5, tart: 7, fresh: 8, unlock: 5 },
+  { id: 'blueberry',  emoji: '🫐', svg: '<svg viewBox="0 0 32 32" width="28" height="28" style="display:inline-block;vertical-align:middle"><circle cx="16" cy="16" r="15" fill="#4a6fd4" stroke="#294090" stroke-width="2"/><circle cx="16" cy="16" r="11" fill="#6b90f0"/><ellipse cx="12" cy="11" rx="5" ry="3" fill="rgba(255,255,255,0.25)"/></svg>', name: 'Blueberry',  cat: 'berry',    sweet: 6, tart: 5, fresh: 6, unlock: 1 },
+  { id: 'cherry',     emoji: '🍒', name: 'Cherry',     cat: 'berry',    sweet: 8, tart: 4, fresh: 6, unlock: 1 },
+  { id: 'lemon',      emoji: '🍋', name: 'Lemon',      cat: 'citrus',   sweet: 2, tart: 8, fresh: 9, unlock: 1 },
+  { id: 'watermelon', emoji: '🍉', name: 'Watermelon', cat: 'basic',    sweet: 8, tart: 1, fresh: 10, unlock: 1 },
+  { id: 'kiwi',       emoji: '🥝', name: 'Kiwi',       cat: 'tropical', sweet: 5, tart: 6, fresh: 8, unlock: 1 },
+  { id: 'banana',     emoji: '🍌', name: 'Banana',     cat: 'basic',    sweet: 8, tart: 1, fresh: 4, unlock: 1 },
+  { id: 'lime',       emoji: '🍋', name: 'Lime',       cat: 'citrus',   sweet: 2, tart: 9, fresh: 10, unlock: 1 },
+  { id: 'dragonfruit',emoji: '🌸', name: 'Dragonfruit',cat: 'tropical', sweet: 6, tart: 3, fresh: 9, unlock: 1 },
+  { id: 'raspberry',  emoji: '🫐', name: 'Raspberry',  cat: 'berry',    sweet: 7, tart: 5, fresh: 7, unlock: 1 },
+  { id: 'coconut',    emoji: '🥥', name: 'Coconut',    cat: 'tropical', sweet: 5, tart: 1, fresh: 8, unlock: 1 },
+  { id: 'plum',       emoji: '🫐', name: 'Plum',       cat: 'berry',    sweet: 6, tart: 4, fresh: 5, unlock: 1 },
+  { id: 'pear',       emoji: '🍐', name: 'Pear',       cat: 'basic',    sweet: 7, tart: 1, fresh: 7, unlock: 1 },
+  { id: 'papaya',     emoji: '🫐', name: 'Papaya',     cat: 'tropical', sweet: 8, tart: 2, fresh: 8, unlock: 1 },
+  { id: 'pomegranate',emoji: '🫐', name: 'Pomegranate',cat: 'berry',    sweet: 5, tart: 7, fresh: 8, unlock: 1 },
+  { id: 'carrot',     emoji: '🥕', name: 'Carrot',     cat: 'basic',    sweet: 5, tart: 2, fresh: 9, unlock: 1 },
+  { id: 'sourcherry', emoji: '🍒', name: 'Sourcherry', cat: 'berry',    sweet: 4, tart: 8, fresh: 7, unlock: 1 },
 ];
 
 /** Fruit → color mapping for blender layers */
@@ -57,6 +59,13 @@ const FRUIT_COLORS = {
   pear:       '#c9d681',
   papaya:     '#ff8c42',
   pomegranate:'#c0392b',
+  carrot:     '#ff8c42',
+  sourcherry: '#dc143c',
+  banana:     '#ffe135',
+  cherry:     '#dc143c',
+  lemon:      '#fff44f',
+  kiwi:       '#7bed9f',
+  mango:      '#ff9f43',
 };
 
 /** Bottle shapes available in the game */
@@ -75,19 +84,19 @@ const ALL_CAPS = [
   { id: 'green',  color: '#2ed573', name: 'Green',  unlock: 1, cost: 0 },
   { id: 'blue',   color: '#3742fa', name: 'Blue',   unlock: 1, cost: 0 },
   { id: 'red',    color: '#ff4757', name: 'Red',    unlock: 1, cost: 0 },
-  { id: 'purple', color: '#a855f7', name: 'Purple', unlock: 2, cost: 80 },
-  { id: 'pink',   color: '#ff6b9d', name: 'Pink',   unlock: 2, cost: 80 },
-  { id: 'orange', color: '#ff6b35', name: 'Orange', unlock: 2, cost: 80 },
+  { id: 'purple', color: '#a855f7', name: 'Purple', unlock: 1, cost: 80 },
+  { id: 'pink',   color: '#ff6b9d', name: 'Pink',   unlock: 1, cost: 80 },
+  { id: 'orange', color: '#ff6b35', name: 'Orange', unlock: 1, cost: 80 },
 ];
 
 /** Label designs */
 const ALL_LABELS = [
   { id: 'fresh',    name: 'Fresh & Natural', style: '🌿 Fresh',        unlock: 1, cost: 0,   bg: '#e8f5e9', text: '#2e7d32', border: '#a5d6a7' },
   { id: 'tropical', name: 'Tropical Vibes',  style: '🌴 Tropical',     unlock: 1, cost: 0,   bg: '#fff3e0', text: '#e65100', border: '#ffcc80' },
-  { id: 'berry',    name: 'Berry Bliss',     style: '🍓 Berry Bliss',  unlock: 2, cost: 100, bg: '#fce4ec', text: '#c62828', border: '#f48fb1' },
-  { id: 'citrus',   name: 'Golden Citrus',   style: '🍋 Citrus Burst', unlock: 2, cost: 100, bg: '#fffde7', text: '#f9a825', border: '#fff176' },
-  { id: 'rainbow',  name: 'Rainbow Burst',   style: '🌈 Rainbow',      unlock: 4, cost: 200, bg: 'linear-gradient(135deg,#fce4ec,#f3e5f5,#e3f2fd,#e0f7fa,#e8f5e9,#fffde7)', text: '#6a1b9a', border: '#ce93d8' },
-  { id: 'sunset',   name: 'Sunset Glow',     style: '🌅 Sunset',       unlock: 4, cost: 200, bg: 'linear-gradient(135deg,#ffccbc,#ffab91,#ff8a65)', text: '#bf360c', border: '#ff7043' },
+  { id: 'berry',    name: 'Berry Bliss',     style: '🍓 Berry Bliss',  unlock: 1, cost: 100, bg: '#fce4ec', text: '#c62828', border: '#f48fb1' },
+  { id: 'citrus',   name: 'Golden Citrus',   style: '🍋 Citrus Burst', unlock: 1, cost: 100, bg: '#fffde7', text: '#f9a825', border: '#fff176' },
+  { id: 'rainbow',  name: 'Rainbow Burst',   style: '🌈 Rainbow',      unlock: 1, cost: 200, bg: 'linear-gradient(135deg,#fce4ec,#f3e5f5,#e3f2fd,#e0f7fa,#e8f5e9,#fffde7)', text: '#6a1b9a', border: '#ce93d8' },
+  { id: 'sunset',   name: 'Sunset Glow',     style: '🌅 Sunset',       unlock: 1, cost: 200, bg: 'linear-gradient(135deg,#ffccbc,#ffab91,#ff8a65)', text: '#bf360c', border: '#ff7043' },
 ];
 
 /** Pastel background gradients for bottle glow */
@@ -308,7 +317,7 @@ let state = {
   lastQueueLevel: 0,        // track which level the queue was generated for
 
   // Unlocks (arrays of IDs)
-  unlockedFruits: ['apple', 'orange', 'strawberry', 'peach', 'grape', 'pineapple', 'mango', 'banana'],
+  unlockedFruits: ['apple','orange','strawberry','peach','grape','pineapple','mango','banana','blueberry','cherry','lemon','watermelon','kiwi','lime','dragonfruit','raspberry','coconut','plum','pear','papaya','pomegranate','carrot','sourcherry'],
   unlockedBottles: ['glass','hex','vintage','carafe','bamboo'],
   unlockedCaps: ['silver','gold','green','blue','red','purple','pink','orange'],
   unlockedLabels: ['fresh','tropical','berry','citrus','rainbow','sunset'],
@@ -426,9 +435,7 @@ function sfxSuccess() {
 }
 
 function sfxCoins() {
-  for (var i = 0; i < 3; i++) {
-    setTimeout(function() { playTone(1200 + Math.random() * 400, 0.1, 'sine', 0.08); }, i * 60);
-  }
+  // Coin sound removed per user request
 }
 
 function sfxLevelUp() {
@@ -453,6 +460,10 @@ function showScreen(name) {
   Object.values(screens).forEach(function(s) { s.classList.remove('active'); });
   screens[screenId].classList.add('active');
   state.screen = name;
+
+  // Keep music playing across all screens
+  var music = document.getElementById('bg-music');
+  if (music && !isMuted && music.paused) music.play().catch(function(){});
 
   // Refresh necessary panels
   if (name === 'menu') refreshMenu();
@@ -659,8 +670,10 @@ function renderDrinkGrid() {
   var html = '';
   products.forEach(function(p) {
     var count = state.blenderFruits.filter(function(f) { return f === p.id; }).length;
+    var thumb = p.img ? '<img src="' + p.img + '" alt="' + p.name + '" class="drink-card-img">' :
+                         '<span class="drink-card-emoji">' + (p.emoji || '🧃') + '</span>';
     html += '<div class="drink-card">' +
-      '<img src="' + p.img + '" alt="' + p.name + '" class="drink-card-img">' +
+      thumb +
       '<span class="drink-card-name">Natural 100%<br>' + p.name + '</span>' +
       '<div class="drink-qty">' +
         (count > 0 ? '<button class="qty-btn" onclick="removeDrink(\'' + p.id + '\')">−</button>' : '') +
@@ -706,33 +719,21 @@ function toggleExtraFruits() {
 /** Render extra fruits grid (fruits without Frutex product images) */
 function renderFruitGrid() {
   var grid = document.getElementById('fruit-grid');
-  var allUnlocked = state.unlockedFruits.concat(state.shopUnlockedFruits);
+  // Show ALL fruits — everything unlocked
   var fruits = ALL_FRUITS.filter(function(f) {
-    return f.cat === currentFruitCat && allUnlocked.indexOf(f.id) !== -1;
-  });
-
-  // Also show locked fruits so player knows what's coming
-  var lockedFruits = ALL_FRUITS.filter(function(f) {
-    return f.cat === currentFruitCat && allUnlocked.indexOf(f.id) === -1;
+    return f.cat === currentFruitCat;
   });
 
   var html = '';
   fruits.forEach(function(f) {
     html += '<div class="fruit-card" draggable="true" data-fruit="' + f.id + '"' +
             ' ondragstart="dragStart(event)" ondragend="dragEnd(event)"' +
+            ' onclick="addDrink(\'' + f.id + '\')"' +
             ' ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)">' +
             '<span class="fruit-emoji">' + fruitIcon(f) + '</span>' +
             '<span class="fruit-name">' + f.name + '</span>' +
             '</div>';
   });
-  lockedFruits.forEach(function(f) {
-    html += '<div class="fruit-card locked">' +
-            '<span class="fruit-emoji">' + fruitIcon(f) + '</span>' +
-            '<span class="fruit-name">' + f.name + '</span>' +
-            '<span class="fruit-unlock">Lv.' + f.unlock + '</span>' +
-            '</div>';
-  });
-
   grid.innerHTML = html;
 }
 
@@ -1851,9 +1852,9 @@ function generateCustomerQueue() {
   if (state.level === 2) {
     state.customerQueue = [marco];
   } else if (state.level === 3) {
-    state.customerQueue = [sophia, giovanni, elena];
+    state.customerQueue = [sophia, elena, giovanni];
   } else if (state.level === 4) {
-    state.customerQueue = [marco, elena, giovanni, sophia];
+    state.customerQueue = [marco, sophia, elena, giovanni];
   } else {
     var shuffled = NPC_CUSTOMERS.slice().sort(function() { return Math.random() - 0.5; });
     var count = 5;
@@ -1958,6 +1959,14 @@ function presentToCustomer() {
   // Level 2+: pull customer from queue
   if (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length) {
     var qc = state.customerQueue[state.currentCustomerIdx];
+    // Marco in level 2 gets random order each time
+    if (qc.id === 'marco' && state.level === 2) {
+      var marcoOrders = [
+        { type:'category', cat:'basic' },
+        { type:'count', minFruits: 3 }
+      ];
+      qc.order = marcoOrders[Math.floor(Math.random() * marcoOrders.length)];
+    }
     currentCustomer = {
       name: qc.name, emoji: qc.emoji, quote: qc.quote,
       isNPC: true, order: qc.order, tip: qc.tip,
@@ -2135,24 +2144,12 @@ function getRating() {
   ratingEl.style.display = 'flex';
   document.getElementById('present-btn').style.display = 'none';
 
-  // 15-second reading delay for nutrition panel
+  // Show Continue button immediately
   var continueBtn = document.getElementById('continue-btn');
-  var readTime = 15;
   continueBtn.style.display = '';
-  continueBtn.disabled = true;
-  continueBtn.textContent = 'Please wait (' + readTime + 's)...';
-  var countdown = setInterval(function() {
-    readTime--;
-    if (readTime <= 0) {
-      clearInterval(countdown);
-      continueBtn.disabled = false;
-      var nextLabel = (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length - 1) ? 'Next Customer →' : 'Continue →';
-      continueBtn.textContent = nextLabel;
-      continueBtn.style.animation = 'pulse 0.5s ease';
-    } else {
-      continueBtn.textContent = 'Continue in ' + readTime + 's...';
-    }
-  }, 1000);
+  continueBtn.disabled = false;
+  var nextLabel = (state.customerQueue.length > 0 && state.currentCustomerIdx < state.customerQueue.length - 1) ? 'Next Customer →' : 'Continue →';
+  continueBtn.textContent = nextLabel;
 
   // Apply rewards
   animateCoins(state.coins + coinsEarned);
@@ -2864,15 +2861,24 @@ function resetGame() {
 var isMuted = false;
 function toggleMute() {
   isMuted = !isMuted;
+  var music = document.getElementById('bg-music');
   var btn = document.getElementById('mute-btn');
   if (isMuted) {
-    btn.textContent = '🔇';
+    if (music) music.pause();
+    btn.innerHTML = '<svg class="icon"><use href="#i-mute"/></svg>';
     btn.classList.add('muted');
   } else {
-    btn.textContent = '🔊';
+    if (music) music.play().catch(function(){});
+    btn.innerHTML = '<svg class="icon"><use href="#i-sound"/></svg>';
     btn.classList.remove('muted');
   }
 }
+
+// Start music on first interaction
+document.addEventListener('click', function startMusic() {
+  var music = document.getElementById('bg-music');
+  if (music && !isMuted) music.play().catch(function(){});
+}, { once: true });
 
 // Wrap sound functions with mute check
 var _sfxDrop = sfxDrop, _sfxBlend = sfxBlend, _sfxClick = sfxClick;

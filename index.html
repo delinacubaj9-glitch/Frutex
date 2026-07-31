@@ -17,6 +17,7 @@
   <audio id="sfx-click" preload="auto"></audio>
   <audio id="sfx-success" preload="auto"></audio>
   <audio id="sfx-coins" preload="auto"></audio>
+  <audio id="bg-music" src="Sunny Orchard Loop.mp3" preload="auto" loop></audio>
   <button id="mute-btn" class="mute-btn" onclick="toggleMute()" title="Toggle Music"><svg class="icon"><use href="#i-sound"/></svg></button>
 
   <!-- ===== TOAST ===== -->
@@ -46,6 +47,7 @@
     <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1.5"/><circle cx="20" cy="21" r="1.5"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6l3 3M15 2l-3 3-3-3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" fill="none" stroke="currentColor" stroke-width="2"/><line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2"/></symbol>
   </defs>
 </svg>
 
@@ -53,9 +55,12 @@
   <!-- SCREEN: MAIN MENU -->
   <!-- =============================== -->
   <div class="screen active" id="menu-screen">
+    <video class="menu-bg-video" autoplay muted loop playsinline>
+      <source src="hailuo-2_3_fun_backround_for_a_game_based_on_drinks._have_loopable_fruits_slowly_falling_fr-0.mp4" type="video/mp4">
+    </video>
     <div class="menu-container">
       <div class="logo-area">
-        <img class="logo-drink" src="frutex-logo.svg" alt="Frutex">
+        <img class="logo-drink" src="tropical-fruit-fun-stockcake-removebg-preview.png" alt="Frutex">
         <h1 class="logo-title">Frutex</h1>
         <p class="logo-subtitle">Natural 100% Fruit Juices</p>
         <p class="player-title" id="menu-title">Junior Juice Maker</p>
@@ -99,8 +104,14 @@
         </button>
       </div>
 
-      <button class="btn-menu btn-primary btn-big" onclick="showScreen('game')"><svg class="icon"><use href="#i-drink"/></svg> Create New Juice</button>
-            <button class="btn-menu btn-secondary" onclick="showScreen('recipes')"><svg class="icon"><use href="#i-book"/></svg> Recipe Book</button>
+      <div class="menu-action-row">
+        <img src="tropical-fruit-fun-stockcake-removebg-preview.png" class="menu-fruit-img" alt="Fruits">
+        <span class="btn-menu btn-primary btn-big" onclick="showScreen('game')" style="background:none;border:none;box-shadow:none;cursor:pointer;padding:0;font-size:1.3rem;color:#e65100;font-weight:800"><svg class="icon" style="color:#e65100"><use href="#i-drink"/></svg> Create New Juice</span>
+      </div>
+      <div class="menu-action-row">
+        <img src="gpt-image-2_create_a_cartoon_style_recipe_book_with_a_drink_on_the_cover_page-0-removebg-preview (1).png" class="menu-fruit-img" alt="Recipe Book">
+        <button class="btn-menu btn-secondary" onclick="showScreen('recipes')"><svg class="icon"><use href="#i-book"/></svg> Recipe Book</button>
+      </div>
             <button class="btn-reset" onclick="resetGame()"><svg class="icon"><use href="#i-refresh"/></svg> Reset Progress</button>
     </div>
   </div>
